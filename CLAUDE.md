@@ -11,6 +11,7 @@ Build a light-themed, mobile-first wellness tracker as an installable website (N
 - GitHub: source of truth
 
 ## Rules
+- Never commit or push directly to `main`. Every change, however small, goes on a new branch (e.g. `feat/water-tracker`, `fix/login-redirect`) and is merged by the owner via pull request.
 - Mobile-first, light theme.
 - Never commit `.env*` files or Supabase service-role keys. Only the anon key and URL may be exposed to the browser.
 - Every new table needs an RLS policy in the same migration. Migrations live in `supabase/migrations`.

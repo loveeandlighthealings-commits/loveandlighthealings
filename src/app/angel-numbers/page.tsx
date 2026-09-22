@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { ANGEL_NUMBERS, findAngelNumber } from "@/lib/angel-numbers";
 import { StarIcon } from "@/app/_components/icons";
 import { TabBar } from "@/app/_components/tab-bar";
@@ -9,14 +9,10 @@ export default async function AngelNumbersPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase.from("profiles").select("interests").eq("user_id", user.id).single();
+  const profile = await getCurrentProfile();
   const interestKeys: string[] = profile?.interests ?? [];
   const hasHealthFood = interestKeys.includes("health_food");
   const hasNumerology = interestKeys.includes("numerology_daily");

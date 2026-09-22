@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { THEMES } from "@/lib/themes";
 import { TabBar } from "@/app/_components/tab-bar";
 import { setTheme } from "./actions";
@@ -10,22 +10,13 @@ export default async function AppearancePage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/login");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("theme, interests")
-    .eq("user_id", user.id)
-    .single();
-
+  const profile = await getCurrentProfile();
   const current = profile?.theme ?? "default";
   const hasHealthFood = (profile?.interests ?? []).includes("health_food");
   const hasNumerology = (profile?.interests ?? []).includes("numerology_daily");

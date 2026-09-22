@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/current-user";
 import { todayInTimezone, weekdayIndex } from "@/lib/date";
 import { dayScore, dayVerdict, foodPct, sleepHours, type DayVerdict, type ScoreComponent } from "@/lib/formulas";
 
@@ -33,7 +34,7 @@ export async function getTodayData(userId: string, timezone: string): Promise<To
   const weekday = weekdayIndex(day);
 
   const [
-    profileRes,
+    cachedProfile,
     dailyLogRes,
     weightRes,
     previousWeightRes,
@@ -42,11 +43,10 @@ export async function getTodayData(userId: string, timezone: string): Promise<To
     mealPlanRes,
     foodEntriesRes,
   ] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("water_goal_ml, steps_goal, sleep_goal_h, cal_goal")
-      .eq("user_id", userId)
-      .single(),
+    // Shared, request-cached profile fetch -- this is the same row the
+    // calling page already fetched, so this call is free within the
+    // request instead of a fifth separate profiles SELECT.
+    getCurrentProfile(),
     supabase
       .from("daily_logs")
       .select("water_ml, steps, bed_time, wake_time, routine_done, links_done, meals_done")
@@ -68,7 +68,7 @@ export async function getTodayData(userId: string, timezone: string): Promise<To
     supabase.from("food_entries").select("kcal, qty").eq("user_id", userId).eq("day", day),
   ]);
 
-  const profile = profileRes.data ?? {
+  const profile = cachedProfile ?? {
     water_goal_ml: 2500,
     steps_goal: 8000,
     sleep_goal_h: 8,

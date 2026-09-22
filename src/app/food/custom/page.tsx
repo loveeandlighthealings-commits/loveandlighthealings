@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { saveCustomFood } from "@/app/food-actions";
 import { TabBar } from "@/app/_components/tab-bar";
 
@@ -12,15 +12,11 @@ export default async function CustomFoodPage({
   searchParams: Promise<{ slot?: string }>;
 }) {
   const { slot } = await searchParams;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   let hasNumerology = false;
   if (user) {
-    const { data: profile } = await supabase.from("profiles").select("interests").eq("user_id", user.id).single();
+    const profile = await getCurrentProfile();
     hasNumerology = (profile?.interests ?? []).includes("numerology_daily");
   }
 

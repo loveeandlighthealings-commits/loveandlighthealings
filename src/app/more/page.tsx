@@ -1,18 +1,14 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { TabBar } from "@/app/_components/tab-bar";
 import { ChevronRightIcon } from "@/app/_components/icons";
 import { signOut } from "@/app/actions";
 
 export default async function MorePage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase.from("profiles").select("interests").eq("user_id", user.id).single();
+  const profile = await getCurrentProfile();
   const interestKeys: string[] = profile?.interests ?? [];
   const hasHealthFood = interestKeys.includes("health_food");
   const hasNumerology = interestKeys.includes("numerology_daily");

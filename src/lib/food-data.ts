@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/current-user";
 import { allowedDietTiers, type DietKey } from "@/lib/diet";
 import { MEAL_SLOTS, type MealSlot } from "@/lib/meal-slots";
 
@@ -36,8 +37,9 @@ const SLOTS: Slot[] = MEAL_SLOTS.map((s) => s.key);
 /** Today's logged food, grouped by meal slot, with running totals against the calorie goal. */
 export async function getFoodLog(userId: string, day: string): Promise<FoodLog> {
   const supabase = await createClient();
-  const [profileRes, entriesRes] = await Promise.all([
-    supabase.from("profiles").select("cal_goal").eq("user_id", userId).single(),
+  const [profile, entriesRes] = await Promise.all([
+    // Request-cached -- free here if the calling page already fetched it.
+    getCurrentProfile(),
     supabase
       .from("food_entries")
       .select("id, slot, name, serving, qty, kcal, protein_g, carbs_g, fat_g")
@@ -77,7 +79,7 @@ export async function getFoodLog(userId: string, day: string): Promise<FoodLog> 
 
   return {
     day,
-    calGoal: profileRes.data?.cal_goal ?? null,
+    calGoal: profile?.cal_goal ?? null,
     totalKcal,
     totalProtein,
     totalCarbs,

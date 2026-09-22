@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { INTERESTS } from "@/lib/interests";
 import { getActiveFast } from "@/lib/fasting-data";
 import { getTodayData } from "@/lib/today";
@@ -16,11 +16,7 @@ const BUILT_INTEREST_ROUTES: Partial<Record<string, string>> = {
 };
 
 export default async function Home() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   // Middleware already redirects signed-out visitors to /login, but keep
   // this as a safe fallback in case this page is ever reached directly.
@@ -28,12 +24,7 @@ export default async function Home() {
     return null;
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, interests, timezone")
-    .eq("user_id", user.id)
-    .single();
-
+  const profile = await getCurrentProfile();
   const displayName = profile?.full_name || user.email;
   const interestKeys: string[] = profile?.interests ?? [];
   const hasHealthFood = interestKeys.includes("health_food");

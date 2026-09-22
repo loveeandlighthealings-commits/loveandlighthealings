@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { THEMES } from "@/lib/themes";
+import { TabBar } from "@/app/_components/tab-bar";
 import { setTheme } from "./actions";
 
 export default async function AppearancePage({
@@ -21,14 +22,15 @@ export default async function AppearancePage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("theme")
+    .select("theme, interests")
     .eq("user_id", user.id)
     .single();
 
   const current = profile?.theme ?? "default";
+  const hasHealthFood = (profile?.interests ?? []).includes("health_food");
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
+    <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 pb-32">
       <div className="card w-full max-w-lg space-y-6">
         <div className="text-center">
           <h1 className="font-serif text-4xl tracking-tight text-foreground">Choose your look</h1>
@@ -76,6 +78,8 @@ export default async function AppearancePage({
           </button>
         </form>
       </div>
+
+      <TabBar hasHealthFood={hasHealthFood} />
     </div>
   );
 }

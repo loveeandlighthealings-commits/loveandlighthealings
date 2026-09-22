@@ -4,6 +4,7 @@ const COLOR_CLASSES = {
   sleep: "bg-sleep",
   calories: "bg-calories",
   weight: "bg-weight",
+  fasting: "bg-fasting",
 } as const;
 
 export function ProgressBar({

@@ -83,9 +83,14 @@ export default async function Home() {
         </div>
 
         <div className="flex flex-col items-center gap-3 pt-2">
-          <Link href="/onboarding" className="text-sm font-medium text-accent-dark hover:underline">
-            Edit what you see
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/onboarding" className="text-sm font-medium text-accent-dark hover:underline">
+              Edit what you see
+            </Link>
+            <Link href="/appearance" className="text-sm font-medium text-accent-dark hover:underline">
+              Choose your look
+            </Link>
+          </div>
 
           <form action={signOut}>
             <button type="submit" className="btn-ghost flex min-h-[44px] items-center justify-center px-5 text-sm">

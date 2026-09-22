@@ -3,6 +3,10 @@
 /*
  * Design tokens per docs/build-brief.md section 8 and reference/prototype.html.
  * Light theme only, by design (see CLAUDE.md) -- no dark-mode media query.
+ * Multiple named color THEMES exist instead (see the [data-theme=...]
+ * blocks below), switched via a data-theme attribute on <html>, set from
+ * profiles.theme. Metric colors (water/steps/sleep/etc.) stay constant
+ * across every theme, since they're functional indicators, not decoration.
  */
 :root {
   --background: #FAF7FD;
@@ -20,7 +24,20 @@
   --muted: var(--border);
   --muted-foreground: var(--foreground-muted);
 
-  /* Metric colors: accent / soft, one pair per tracked metric. */
+  /* The fixed background aura: 4 corner glows + a base gradient. */
+  --aura-1: rgba(255, 188, 160, 0.62);
+  --aura-2: rgba(178, 158, 255, 0.56);
+  --aura-3: rgba(146, 228, 202, 0.44);
+  --aura-4: rgba(255, 168, 204, 0.42);
+  --aura-from: #fcf9ff;
+  --aura-to: #f5f0fc;
+
+  /* The Today screen's hero orb ring, a 3-stop gradient. */
+  --orb-1: #FFA07E;
+  --orb-2: #EE6C9A;
+  --orb-3: #7A5CE2;
+
+  /* Metric colors: accent / soft, one pair per tracked metric. Constant across themes. */
   --water: #3B8FEA;
   --water-soft: #E6F1FE;
   --steps: #2FB37F;
@@ -35,6 +52,69 @@
   --workout-soft: #FDE8E6;
   --weight: #A657C9;
   --weight-soft: #F4E7FA;
+}
+
+/* Sunset: warm, romantic, energizing. */
+:root[data-theme="sunset"] {
+  --background: #FFF8F3;
+  --foreground: #3A2620;
+  --foreground-muted: #7A5B4E;
+  --foreground-subtle: #96786A;
+  --border: #F5E3D7;
+  --accent: #E8703C;
+  --accent-dark: #C24A5E;
+  --accent-soft: #FDE9DE;
+  --aura-1: rgba(255, 138, 90, 0.6);
+  --aura-2: rgba(232, 93, 117, 0.5);
+  --aura-3: rgba(255, 196, 92, 0.42);
+  --aura-4: rgba(178, 74, 122, 0.38);
+  --aura-from: #fffaf5;
+  --aura-to: #fdf0e6;
+  --orb-1: #FFC66B;
+  --orb-2: #F0723C;
+  --orb-3: #C24A5E;
+}
+
+/* 7 Chakras: spiritual, vivid but tasteful, an indigo "third eye" accent. */
+:root[data-theme="chakras"] {
+  --background: #F8F6FF;
+  --foreground: #2A2140;
+  --foreground-muted: #5C5178;
+  --foreground-subtle: #7A6F93;
+  --border: #EAE4FA;
+  --accent: #5A4FCF;
+  --accent-dark: #453BAE;
+  --accent-soft: #ECE8FF;
+  --aura-1: rgba(224, 84, 84, 0.5);
+  --aura-2: rgba(74, 176, 122, 0.44);
+  --aura-3: rgba(240, 190, 60, 0.4);
+  --aura-4: rgba(90, 79, 207, 0.5);
+  --aura-from: #faf9ff;
+  --aura-to: #f3f0fd;
+  --orb-1: #E9C46A;
+  --orb-2: #E05454;
+  --orb-3: #5A4FCF;
+}
+
+/* Forest: calm, earthy, grounding. */
+:root[data-theme="forest"] {
+  --background: #F6F8F3;
+  --foreground: #2B3328;
+  --foreground-muted: #56634F;
+  --foreground-subtle: #758169;
+  --border: #E4EBDD;
+  --accent: #3F7D5C;
+  --accent-dark: #2E5A42;
+  --accent-soft: #E3EFE6;
+  --aura-1: rgba(107, 168, 92, 0.5);
+  --aura-2: rgba(210, 173, 90, 0.42);
+  --aura-3: rgba(90, 150, 140, 0.4);
+  --aura-4: rgba(63, 125, 92, 0.36);
+  --aura-from: #f8faf5;
+  --aura-to: #eef3ea;
+  --orb-1: #D2AD5A;
+  --orb-2: #6BA85C;
+  --orb-3: #2E5A42;
 }
 
 @theme inline {
@@ -78,8 +158,9 @@ body {
 }
 
 /*
- * Fixed dawn aura behind everything: frosted cards glide over it as the
- * page scrolls. Ported from reference/prototype.html's body::before/::after.
+ * Fixed aura behind everything: frosted cards glide over it as the page
+ * scrolls. Ported from reference/prototype.html's body::before/::after,
+ * with the 4 glow colors and base gradient driven by theme variables.
  */
 body::before {
   content: "";
@@ -88,11 +169,11 @@ body::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(62vmax 46vmax at 6% 3%, rgba(255, 188, 160, 0.62), transparent 60%),
-    radial-gradient(56vmax 46vmax at 98% 6%, rgba(178, 158, 255, 0.56), transparent 62%),
-    radial-gradient(62vmax 50vmax at 2% 98%, rgba(146, 228, 202, 0.44), transparent 60%),
-    radial-gradient(60vmax 50vmax at 100% 94%, rgba(255, 168, 204, 0.42), transparent 62%),
-    linear-gradient(180deg, #fcf9ff, #f5f0fc);
+    radial-gradient(62vmax 46vmax at 6% 3%, var(--aura-1), transparent 60%),
+    radial-gradient(56vmax 46vmax at 98% 6%, var(--aura-2), transparent 62%),
+    radial-gradient(62vmax 50vmax at 2% 98%, var(--aura-3), transparent 60%),
+    radial-gradient(60vmax 50vmax at 100% 94%, var(--aura-4), transparent 62%),
+    linear-gradient(180deg, var(--aura-from), var(--aura-to));
 }
 
 body::after {
@@ -149,12 +230,12 @@ body::after {
 .btn-primary {
   appearance: none;
   border: 0;
-  background: linear-gradient(135deg, #7c5fe6, #6a4dd4);
-  color: #fff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 82%, white), var(--accent));
+  color: var(--accent-foreground);
   font-weight: 700;
   border-radius: 999px;
   box-shadow:
-    0 14px 26px -14px rgba(106, 77, 212, 0.9),
+    0 14px 26px -14px color-mix(in srgb, var(--accent) 70%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   transition: transform 0.1s ease;
 }

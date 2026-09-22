@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { INTERESTS } from "@/lib/interests";
+import { getActiveFast } from "@/lib/fasting-data";
 import { getTodayData } from "@/lib/today";
+import { FastingTimer } from "./_components/fasting-timer";
 import { HeroOrb } from "./_components/hero-orb";
 import { InterestIcon, interestThemeVars } from "./_components/interest-visuals";
 import { TrackerTiles } from "./_components/tracker-tiles";
@@ -32,6 +34,7 @@ export default async function Home() {
   const otherSelected = INTERESTS.filter((i) => i.key !== "health_food" && interestKeys.includes(i.key));
 
   const today = hasHealthFood ? await getTodayData(user.id, profile?.timezone ?? "Asia/Kolkata") : null;
+  const activeFast = hasHealthFood ? await getActiveFast(user.id) : null;
 
   return (
     <div className="flex flex-1 flex-col items-center px-4 py-10">
@@ -49,8 +52,9 @@ export default async function Home() {
               {today.verdict.headline}
             </h2>
             <p className="mx-auto mt-2 max-w-[38ch] text-sm text-foreground-muted">{today.verdict.subtext}</p>
-            <div className="mt-6 text-left">
+            <div className="mt-6 space-y-3 text-left">
               <TrackerTiles data={today} />
+              <FastingTimer active={activeFast} />
             </div>
           </section>
         )}

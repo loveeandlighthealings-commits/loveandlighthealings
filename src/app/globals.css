@@ -52,6 +52,8 @@
   --workout-soft: #FDE8E6;
   --weight: #A657C9;
   --weight-soft: #F4E7FA;
+  --fasting: #C9962F;
+  --fasting-soft: #FBF0DB;
 }
 
 /* Sunset: warm, romantic, energizing. */
@@ -145,6 +147,8 @@
   --color-workout-soft: var(--workout-soft);
   --color-weight: var(--weight);
   --color-weight-soft: var(--weight-soft);
+  --color-fasting: var(--fasting);
+  --color-fasting-soft: var(--fasting-soft);
 
   --font-serif: var(--font-instrument-serif);
   --font-sans: var(--font-manrope);

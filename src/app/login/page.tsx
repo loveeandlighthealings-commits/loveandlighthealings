@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SparkleIcon } from "@/app/_components/icons";
 import { login } from "./actions";
 
 export default async function LoginPage({
@@ -12,6 +13,9 @@ export default async function LoginPage({
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
       <div className="card w-full max-w-sm space-y-6">
         <div className="text-center">
+          <span className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-accent-soft text-accent">
+            <SparkleIcon width={22} height={22} />
+          </span>
           <h1 className="font-serif text-4xl tracking-tight text-foreground">Welcome back</h1>
           <p className="mt-1 text-sm text-foreground-muted">
             Sign in to your Love and Light Healings account.

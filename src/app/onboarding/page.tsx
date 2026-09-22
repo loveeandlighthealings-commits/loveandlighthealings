@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { INTERESTS } from "@/lib/interests";
+import { InterestIcon, interestThemeVars } from "@/app/_components/interest-visuals";
 import { saveInterests } from "./actions";
 
 export default async function OnboardingPage({
@@ -48,28 +49,33 @@ export default async function OnboardingPage({
         )}
 
         <form action={saveInterests} className="space-y-3">
-          {INTERESTS.map((interest) => (
-            <label
-              key={interest.key}
-              className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-white/85 p-4 transition-colors hover:bg-white has-[:checked]:border-accent has-[:checked]:bg-accent-soft/60"
-            >
-              <input
-                type="checkbox"
-                name="interests"
-                value={interest.key}
-                defaultChecked={selected.has(interest.key)}
-                className="mt-1 h-5 w-5 flex-none accent-accent"
-              />
-              <span>
-                <span className="block font-medium text-foreground">
-                  {interest.label}
+          {INTERESTS.map((interest) => {
+            const vars = interestThemeVars(interest.theme);
+            return (
+              <label
+                key={interest.key}
+                className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-white/85 p-4 transition-colors hover:bg-white has-[:checked]:border-transparent has-[:checked]:shadow-[0_0_0_2px_var(--ring-color)]"
+                style={{ ["--ring-color" as string]: vars.color, background: `linear-gradient(160deg, ${vars.soft} 0%, rgba(255,255,255,0) 65%)` }}
+              >
+                <InterestIcon theme={interest.theme} icon={interest.icon} />
+                <span className="flex-1">
+                  <span className="block font-medium text-foreground">
+                    {interest.label}
+                  </span>
+                  <span className="block text-sm text-foreground-muted">
+                    {interest.description}
+                  </span>
                 </span>
-                <span className="block text-sm text-foreground-muted">
-                  {interest.description}
-                </span>
-              </span>
-            </label>
-          ))}
+                <input
+                  type="checkbox"
+                  name="interests"
+                  value={interest.key}
+                  defaultChecked={selected.has(interest.key)}
+                  className="mt-1 h-5 w-5 flex-none accent-accent"
+                />
+              </label>
+            );
+          })}
 
           <button
             type="submit"

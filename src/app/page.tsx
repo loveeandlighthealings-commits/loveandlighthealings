@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { INTERESTS } from "@/lib/interests";
 import { getTodayData } from "@/lib/today";
 import { HeroOrb } from "./_components/hero-orb";
+import { InterestIcon, interestThemeVars } from "./_components/interest-visuals";
 import { TrackerTiles } from "./_components/tracker-tiles";
 import { signOut } from "./actions";
 
@@ -55,15 +56,30 @@ export default async function Home() {
         )}
 
         <div className="space-y-3">
-          {otherSelected.map((interest) => (
-            <div key={interest.key} className="card">
-              <p className="font-serif text-2xl leading-tight text-foreground">{interest.label}</p>
-              <p className="mt-1 text-sm text-foreground-muted">{interest.description}</p>
-              <p className="mt-3 inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-dark">
-                Coming soon
-              </p>
-            </div>
-          ))}
+          {otherSelected.map((interest) => {
+            const vars = interestThemeVars(interest.theme);
+            return (
+              <div
+                key={interest.key}
+                className="card overflow-hidden"
+                style={{ background: `linear-gradient(160deg, ${vars.soft} 0%, rgba(255,255,255,0) 60%)` }}
+              >
+                <div className="flex items-start gap-3">
+                  <InterestIcon theme={interest.theme} icon={interest.icon} />
+                  <div>
+                    <p className="font-serif text-2xl leading-tight text-foreground">{interest.label}</p>
+                    <p className="mt-1 text-sm text-foreground-muted">{interest.description}</p>
+                  </div>
+                </div>
+                <p
+                  className="mt-3 inline-block rounded-full px-3 py-1 text-xs font-semibold"
+                  style={{ background: vars.soft, color: vars.color }}
+                >
+                  Coming soon
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         <div className="flex flex-col items-center gap-3 pt-2">

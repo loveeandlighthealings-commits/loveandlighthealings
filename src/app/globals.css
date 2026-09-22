@@ -75,3 +75,17 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
+
+/* The Today screen's hero orb has a slow "breathing" halo behind it. */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.045); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .halo {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: breathe 7s ease-in-out infinite;
+  }
+}

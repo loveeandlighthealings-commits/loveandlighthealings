@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { allowedDietTiers, type DietKey } from "@/lib/diet";
+import { MEAL_SLOTS, type MealSlot } from "@/lib/meal-slots";
 
-export type Slot = "b" | "l" | "s" | "d";
+export type Slot = MealSlot;
 
 export interface FoodEntry {
   id: string;
@@ -30,7 +31,7 @@ export interface FoodLog {
   slots: Record<Slot, SlotLog>;
 }
 
-const SLOTS: Slot[] = ["b", "l", "s", "d"];
+const SLOTS: Slot[] = MEAL_SLOTS.map((s) => s.key);
 
 /** Today's logged food, grouped by meal slot, with running totals against the calorie goal. */
 export async function getFoodLog(userId: string, day: string): Promise<FoodLog> {

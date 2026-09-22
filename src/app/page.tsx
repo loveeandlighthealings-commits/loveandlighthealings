@@ -35,8 +35,10 @@ export default async function Home() {
   return (
     <div className="flex flex-1 flex-col items-center px-4 py-10">
       <div className="w-full max-w-lg space-y-6">
-        <div className="text-center">
-          <h1 className="text-xl font-semibold text-foreground">Welcome, {displayName}</h1>
+        <div className="flex items-end justify-between px-1.5 pb-2 pt-3">
+          <h1 className="font-serif text-[32px] leading-none tracking-tight text-foreground">
+            Welcome, {displayName}
+          </h1>
         </div>
 
         {today && (
@@ -54,24 +56,23 @@ export default async function Home() {
 
         <div className="space-y-3">
           {otherSelected.map((interest) => (
-            <div key={interest.key} className="rounded-lg border border-border bg-white p-4">
-              <p className="font-medium text-foreground">{interest.label}</p>
-              <p className="text-sm text-muted-foreground">{interest.description}</p>
-              <p className="mt-2 text-xs font-medium text-accent">Coming soon</p>
+            <div key={interest.key} className="card">
+              <p className="font-serif text-2xl leading-tight text-foreground">{interest.label}</p>
+              <p className="mt-1 text-sm text-foreground-muted">{interest.description}</p>
+              <p className="mt-3 inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold text-accent-dark">
+                Coming soon
+              </p>
             </div>
           ))}
         </div>
 
         <div className="flex flex-col items-center gap-3 pt-2">
-          <Link href="/onboarding" className="text-sm font-medium text-accent hover:underline">
+          <Link href="/onboarding" className="text-sm font-medium text-accent-dark hover:underline">
             Edit what you see
           </Link>
 
           <form action={signOut}>
-            <button
-              type="submit"
-              className="rounded-full border border-border bg-white px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-            >
+            <button type="submit" className="btn-ghost flex min-h-[44px] items-center justify-center px-5 text-sm">
               Sign out
             </button>
           </form>

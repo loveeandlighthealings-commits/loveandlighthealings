@@ -10,10 +10,10 @@ export default async function LoginPage({
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
-      <div className="w-full max-w-sm space-y-6">
+      <div className="card w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-foreground">Welcome back</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h1 className="font-serif text-4xl tracking-tight text-foreground">Welcome back</h1>
+          <p className="mt-1 text-sm text-foreground-muted">
             Sign in to your Love and Light Healings account.
           </p>
         </div>
@@ -35,7 +35,7 @@ export default async function LoginPage({
               type="email"
               required
               autoComplete="email"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+              className="w-full rounded-2xl border border-border bg-white/90 px-3.5 py-2.5 text-[16px] text-foreground outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </div>
 
@@ -49,21 +49,21 @@ export default async function LoginPage({
               type="password"
               required
               autoComplete="current-password"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+              className="w-full rounded-2xl border border-border bg-white/90 px-3.5 py-2.5 text-[16px] text-foreground outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+            className="btn-primary flex min-h-[48px] w-full items-center justify-center px-5 text-[14.5px]"
           >
             Sign in
           </button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-sm text-foreground-muted">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-medium text-accent">
+          <Link href="/signup" className="font-medium text-accent-dark">
             Sign up
           </Link>
         </p>

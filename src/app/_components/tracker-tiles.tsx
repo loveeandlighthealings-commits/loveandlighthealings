@@ -26,14 +26,16 @@ function TileShell({
 }) {
   return (
     <div
-      className="flex flex-col gap-1.5 rounded-[30px] p-4"
+      className="tile flex flex-col gap-1.5 rounded-[30px] p-4"
       style={{
         background: `linear-gradient(160deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 55%), ${softVar}`,
         boxShadow: `0 18px 34px -24px ${colorVar}`,
       }}
     >
       <div className="flex items-center gap-2 text-sm font-bold" style={{ color: colorVar }}>
-        <span className="grid h-8 w-8 place-items-center rounded-xl bg-white">{icon}</span>
+        <span className="grid h-8 w-8 place-items-center rounded-xl bg-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.9)]">
+          {icon}
+        </span>
         <span className="text-foreground">{title}</span>
       </div>
       {children}

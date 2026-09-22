@@ -1,0 +1,84 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { INTERESTS } from "@/lib/interests";
+import { saveInterests } from "./actions";
+
+export default async function OnboardingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("interests")
+    .eq("user_id", user.id)
+    .single();
+
+  const selected = new Set(profile?.interests ?? []);
+  const isEditing = selected.size > 0;
+
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
+      <div className="w-full max-w-lg space-y-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold text-foreground">
+            {isEditing ? "Edit what you see" : "What would you like to see?"}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Pick as many as you like. Your dashboard will only show these — you
+            can change your mind anytime.
+          </p>
+        </div>
+
+        {error && (
+          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
+        )}
+
+        <form action={saveInterests} className="space-y-3">
+          {INTERESTS.map((interest) => (
+            <label
+              key={interest.key}
+              className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-white p-4 hover:bg-muted"
+            >
+              <input
+                type="checkbox"
+                name="interests"
+                value={interest.key}
+                defaultChecked={selected.has(interest.key)}
+                className="mt-1 h-5 w-5 flex-none accent-accent"
+              />
+              <span>
+                <span className="block font-medium text-foreground">
+                  {interest.label}
+                </span>
+                <span className="block text-sm text-muted-foreground">
+                  {interest.description}
+                </span>
+              </span>
+            </label>
+          ))}
+
+          <button
+            type="submit"
+            className="w-full rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+          >
+            {isEditing ? "Save changes" : "Continue"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

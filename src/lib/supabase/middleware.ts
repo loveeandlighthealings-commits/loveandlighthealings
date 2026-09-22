@@ -35,14 +35,32 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isAuthRoute = request.nextUrl.pathname.startsWith("/login") ||
-    request.nextUrl.pathname.startsWith("/signup") ||
-    request.nextUrl.pathname.startsWith("/auth");
+  const pathname = request.nextUrl.pathname;
+  const isAuthRoute = pathname.startsWith("/login") ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/auth");
+  const isOnboardingRoute = pathname.startsWith("/onboarding");
 
   if (!user && !isAuthRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
+  }
+
+  // Signed-in users who haven't chosen their dashboard sections yet go
+  // through onboarding first, once, right after signup.
+  if (user && !isAuthRoute && !isOnboardingRoute) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("interests")
+      .eq("user_id", user.id)
+      .single();
+
+    if (profile && (profile.interests?.length ?? 0) === 0) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/onboarding";
+      return NextResponse.redirect(url);
+    }
   }
 
   // IMPORTANT: return supabaseResponse as-is so cookies stay in sync.

@@ -55,6 +55,12 @@ export default async function Home() {
             <div className="mt-6 space-y-3 text-left">
               <TrackerTiles data={today} />
               <FastingTimer active={activeFast} />
+              <Link
+                href="/food"
+                className="btn-soft flex min-h-[44px] w-full items-center justify-center px-5 text-sm"
+              >
+                Log food &amp; browse recipes
+              </Link>
             </div>
           </section>
         )}
@@ -94,6 +100,11 @@ export default async function Home() {
             <Link href="/appearance" className="text-sm font-medium text-accent-dark hover:underline">
               Choose your look
             </Link>
+            {hasHealthFood && (
+              <Link href="/diet" className="text-sm font-medium text-accent-dark hover:underline">
+                Diet preference
+              </Link>
+            )}
           </div>
 
           <form action={signOut}>

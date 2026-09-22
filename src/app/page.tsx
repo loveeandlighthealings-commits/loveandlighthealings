@@ -9,6 +9,12 @@ import { InterestIcon, interestThemeVars } from "./_components/interest-visuals"
 import { TabBar } from "./_components/tab-bar";
 import { TrackerTiles } from "./_components/tracker-tiles";
 
+/** Interest categories that have a real screen built, and where it lives. */
+const BUILT_INTEREST_ROUTES: Partial<Record<string, string>> = {
+  numerology_daily: "/numerology",
+  angel_numbers: "/angel-numbers",
+};
+
 export default async function Home() {
   const supabase = await createClient();
 
@@ -77,7 +83,7 @@ export default async function Home() {
         <div className="space-y-3">
           {otherSelected.map((interest) => {
             const vars = interestThemeVars(interest.theme);
-            const isBuilt = interest.key === "numerology_daily";
+            const href = BUILT_INTEREST_ROUTES[interest.key];
             const content = (
               <>
                 <div className="flex items-start gap-3">
@@ -91,15 +97,15 @@ export default async function Home() {
                   className="mt-3 inline-block rounded-full px-3 py-1 text-xs font-semibold"
                   style={{ background: vars.soft, color: vars.color }}
                 >
-                  {isBuilt ? "Open" : "Coming soon"}
+                  {href ? "Open" : "Coming soon"}
                 </p>
               </>
             );
             const className = "card block overflow-hidden";
             const style = { background: `linear-gradient(160deg, ${vars.soft} 0%, rgba(255,255,255,0) 60%)` };
 
-            return isBuilt ? (
-              <Link key={interest.key} href="/numerology" className={className} style={style}>
+            return href ? (
+              <Link key={interest.key} href={href} className={className} style={style}>
                 {content}
               </Link>
             ) : (

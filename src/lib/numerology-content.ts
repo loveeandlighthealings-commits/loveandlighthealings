@@ -180,3 +180,25 @@ export const NUMEROLOGY_CONTENT: Record<number, NumerologyReading> = {
 export function numerologyReading(n: number): NumerologyReading {
   return NUMEROLOGY_CONTENT[n] ?? NUMEROLOGY_CONTENT[1];
 }
+
+/**
+ * What each Challenge number asks you to work through -- the growth edge
+ * of that number, rather than its everyday keyword. Challenges can be 0
+ * (no single fixed obstacle) and are never master numbers.
+ */
+export const CHALLENGE_TEXT: Record<number, string> = {
+  0: "The challenge of unlimited choice: with no single fixed obstacle, the risk is drifting without direction. Learn to commit and choose deliberately.",
+  1: "Learning to stand on your own two feet and lead without becoming domineering, selfish or overly dependent on others for approval.",
+  2: "Overcoming oversensitivity, shyness or indecision, and learning to cooperate without losing your own voice.",
+  3: "Learning to focus scattered talents and speak your truth, without hiding behind humour, criticism or self-doubt.",
+  4: "Overcoming rigidity or resistance to hard work, and learning to build steady foundations without becoming stuck in a rut.",
+  5: "Learning to use freedom wisely, resisting overindulgence and restlessness, and following through on commitments.",
+  6: "Overcoming a tendency to control, worry or over-give, and learning to accept imperfection in yourself and others.",
+  7: "Learning to trust and open up to others, overcoming isolation, cynicism or a fear of being truly seen.",
+  8: "Overcoming struggles with power, money or recognition, and learning to use ambition with fairness and integrity.",
+  9: "Learning to let go, forgive and give generously, without becoming emotionally overwhelmed or resentful.",
+};
+
+export function challengeText(n: number): string {
+  return CHALLENGE_TEXT[n] ?? CHALLENGE_TEXT[0];
+}

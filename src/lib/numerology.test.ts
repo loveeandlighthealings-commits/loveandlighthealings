@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { base, calculateNameNumbers, calculatePersonalNumbers, displayNumber, red } from "./numerology";
+import {
+  base,
+  calculateChallenges,
+  calculateMaturity,
+  calculateNameNumbers,
+  calculatePersonalNumbers,
+  calculatePinnacles,
+  displayNumber,
+  red,
+} from "./numerology";
 
 describe("red", () => {
   it("reduces to a single digit", () => {
@@ -63,6 +72,62 @@ describe("calculatePersonalNumbers", () => {
     expect(a.universalMonth).toBe(b.universalMonth);
     expect(a.universalDay).toBe(b.universalDay);
   });
+
+  it("flags a Karmic Debt on the birthday number for days 13, 14, 16 or 19", () => {
+    const born16th = calculatePersonalNumbers("1985-03-16", "2026-09-21");
+    expect(born16th.birthdayNumber).toBe(7); // red(16) = 7
+    expect(born16th.birthdayKarmicDebt).toBe(16);
+
+    const born10th = calculatePersonalNumbers("1985-03-10", "2026-09-21");
+    expect(born10th.birthdayKarmicDebt).toBeNull();
+  });
+
+  it("flags a Karmic Debt on the life path when its pre-reduction sum is 13, 14, 16 or 19", () => {
+    // red(9) + red(9) + red(1990) = 9 + 9 + 1 = 19 -> a Karmic Debt, reducing on to 1
+    const result = calculatePersonalNumbers("1990-09-09", "2026-09-21");
+    expect(result.lifePath).toBe(1);
+    expect(result.lifePathKarmicDebt).toBe(19);
+  });
+});
+
+describe("calculateMaturity", () => {
+  it("sums life path and expression, keeping a resulting master number", () => {
+    expect(calculateMaturity(11, 11)).toBe(22);
+    expect(calculateMaturity(3, 4)).toBe(7);
+  });
+});
+
+describe("calculateChallenges", () => {
+  it("computes the four challenges for the brief's worked birth date", () => {
+    const result = calculateChallenges("1990-05-14");
+    expect(result.first).toBe(0); // |base(5) - base(14)| = |5-5| = 0
+    expect(result.second).toBe(4); // |base(14) - base(1990)| = |5-1| = 4
+    expect(result.third).toBe(4); // |0 - 4| = 4
+    expect(result.fourth).toBe(4); // |base(5) - base(1990)| = |5-1| = 4
+  });
+
+  it("never returns a master number", () => {
+    const result = calculateChallenges("1988-11-29");
+    for (const value of Object.values(result)) {
+      expect(value).toBeLessThanOrEqual(8);
+    }
+  });
+});
+
+describe("calculatePinnacles", () => {
+  it("computes the four pinnacles and their age ranges for the brief's worked birth date", () => {
+    const result = calculatePinnacles("1990-05-14", 11);
+    expect(result.first.number).toBe(1); // red(base(5) + base(14)) = red(5+5) = 1
+    expect(result.second.number).toBe(6); // red(base(14) + base(1990)) = red(5+1) = 6
+    expect(result.third.number).toBe(7); // red(1 + 6) = 7
+    expect(result.fourth.number).toBe(6); // red(base(5) + base(1990)) = red(5+1) = 6
+
+    expect(result.first.fromAge).toBe(0);
+    expect(result.first.toAge).toBe(34); // 36 - base(11) = 36 - 2
+    expect(result.second.toAge).toBe(43);
+    expect(result.third.toAge).toBe(52);
+    expect(result.fourth.toAge).toBeNull();
+  });
 });
 
 describe("calculateNameNumbers", () => {
@@ -87,5 +152,15 @@ describe("calculateNameNumbers", () => {
 
     const withPunctuation = calculateNameNumbers("Ann-Marie O'Neil");
     expect(withPunctuation).not.toBeNull();
+  });
+
+  it("finds the most frequent letter value as the Hidden Passion", () => {
+    // "Ann": a=1 (x1), n=5 (x2) -> 5 is the clear majority
+    expect(calculateNameNumbers("Ann")!.hiddenPassion).toEqual([5]);
+  });
+
+  it("returns every tied value when there's no single most-frequent letter", () => {
+    // "AB": a=1 (x1), b=2 (x1) -> tied
+    expect(calculateNameNumbers("AB")!.hiddenPassion).toEqual([1, 2]);
   });
 });

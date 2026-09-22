@@ -1,14 +1,30 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { todayInTimezone } from "@/lib/date";
-import { calculateNameNumbers, calculatePersonalNumbers, displayNumber } from "@/lib/numerology";
-import { numerologyReading } from "@/lib/numerology-content";
+import {
+  calculateChallenges,
+  calculateMaturity,
+  calculateNameNumbers,
+  calculatePersonalNumbers,
+  calculatePinnacles,
+  displayNumber,
+} from "@/lib/numerology";
+import { challengeText, numerologyReading } from "@/lib/numerology-content";
 import { Mandala } from "@/app/_components/mandala";
 import { SparkleIcon } from "@/app/_components/icons";
 import { TabBar } from "@/app/_components/tab-bar";
 import { saveNumerologyProfile } from "./actions";
 
-type FocusKey = "day" | "month" | "year" | "lifepath" | "birthday" | "expression" | "soulurge" | "personality";
+type FocusKey =
+  | "day"
+  | "month"
+  | "year"
+  | "lifepath"
+  | "birthday"
+  | "expression"
+  | "soulurge"
+  | "personality"
+  | "maturity";
 
 const FOCUS_LABELS: Record<FocusKey, string> = {
   day: "Personal day",
@@ -19,6 +35,7 @@ const FOCUS_LABELS: Record<FocusKey, string> = {
   expression: "Expression",
   soulurge: "Soul urge",
   personality: "Personality",
+  maturity: "Maturity",
 };
 
 function numHref(date: string, focus: FocusKey, edit?: boolean) {
@@ -118,6 +135,9 @@ export default async function NumerologyPage({
 
   const nums = calculatePersonalNumbers(birthDate, date);
   const nameNums = calculateNameNumbers(profile.full_name ?? "");
+  const maturity = nameNums ? calculateMaturity(nums.lifePath, nameNums.expression) : null;
+  const challenges = calculateChallenges(birthDate);
+  const pinnacles = calculatePinnacles(birthDate, nums.lifePath);
 
   const focusValues: Record<FocusKey, number> = {
     day: nums.personalDay,
@@ -128,10 +148,20 @@ export default async function NumerologyPage({
     expression: nameNums?.expression ?? 0,
     soulurge: nameNums?.soulUrge ?? 0,
     personality: nameNums?.personality ?? 0,
+    maturity: maturity ?? 0,
+  };
+
+  const karmicDebtByFocus: Partial<Record<FocusKey, number | null>> = {
+    lifepath: nums.lifePathKarmicDebt,
+    birthday: nums.birthdayKarmicDebt,
+    expression: nameNums?.expressionKarmicDebt ?? null,
+    soulurge: nameNums?.soulUrgeKarmicDebt ?? null,
+    personality: nameNums?.personalityKarmicDebt ?? null,
   };
 
   const focusedNumber = focusValues[focus];
   const reading = numerologyReading(focusedNumber);
+  const karmicDebt = karmicDebtByFocus[focus] ?? null;
 
   const focusedText =
     focus === "day" ? reading.day : focus === "month" ? reading.month : focus === "year" ? reading.year : reading.lifePath;
@@ -157,7 +187,22 @@ export default async function NumerologyPage({
     if (nameNums.personality) {
       coreRows.push({ key: "personality", label: "Personality", description: "How others first see you" });
     }
+    coreRows.push({ key: "maturity", label: "Maturity", description: "Who you grow into, from your mid-30s on" });
   }
+
+  const challengeRows = [
+    ["1st", challenges.first],
+    ["2nd", challenges.second],
+    ["3rd", challenges.third],
+    ["4th", challenges.fourth],
+  ] as const;
+
+  const pinnacleRows = [
+    ["1st", pinnacles.first],
+    ["2nd", pinnacles.second],
+    ["3rd", pinnacles.third],
+    ["4th", pinnacles.fourth],
+  ] as const;
 
   return (
     <div className="flex flex-1 flex-col items-center px-4 py-10 pb-32">
@@ -250,6 +295,21 @@ export default async function NumerologyPage({
             <span className="h-4 w-4 rounded-full" style={{ background: reading.color }} />
             Colour to notice: {reading.colorName}
           </div>
+
+          {karmicDebt && (
+            <div
+              className="mt-4 rounded-2xl p-3"
+              style={{ background: `color-mix(in srgb, ${reading.color} 12%, white)` }}
+            >
+              <p className="text-xs font-bold" style={{ color: reading.color }}>
+                Karmic Debt {karmicDebt}
+              </p>
+              <p className="mt-1 text-sm leading-snug text-foreground">
+                This number carries a Karmic Debt from {karmicDebt} -- a traditional sign to work with this theme
+                consciously rather than avoid it, since the lesson tends to resurface until it&rsquo;s met head-on.
+              </p>
+            </div>
+          )}
         </section>
 
         <section className="card">
@@ -375,6 +435,16 @@ export default async function NumerologyPage({
               Add your full name to see Expression, Soul urge and Personality.
             </p>
           )}
+          {nameNums && nameNums.hiddenPassion.length > 0 && (
+            <div className="mt-4 rounded-2xl bg-muted p-3">
+              <p className="text-xs font-bold text-foreground-subtle">Hidden Passion</p>
+              <p className="mt-1 text-sm leading-snug text-foreground">
+                {nameNums.hiddenPassion.map((n) => displayNumber(n)).join(" & ")} &mdash;{" "}
+                {nameNums.hiddenPassion.map((n) => numerologyReading(n).keyword.toLowerCase()).join("; ")}. A talent
+                you lean on so naturally it can go unnoticed.
+              </p>
+            </div>
+          )}
           <Link
             href={numHref(date, focus, true)}
             className="btn-soft mt-4 inline-flex min-h-[38px] items-center justify-center px-4 text-sm"
@@ -382,6 +452,63 @@ export default async function NumerologyPage({
             Edit my details
           </Link>
         </section>
+
+        <section className="card">
+          <h3 className="mb-1 font-serif text-2xl leading-tight text-foreground">Your challenges</h3>
+          <p className="mb-3 text-sm text-foreground-muted">
+            The growth edge of each life stage &mdash; not obstacles to fear, but patterns to work through.
+          </p>
+          <div className="divide-y divide-border">
+            {challengeRows.map(([label, value]) => (
+              <div key={label} className="flex items-start gap-3 py-3">
+                <span className="grid h-11 w-11 flex-none place-items-center rounded-full bg-muted font-serif text-lg text-foreground">
+                  {value}
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-foreground-subtle">{label} challenge</p>
+                  <p className="text-sm leading-snug text-foreground">{challengeText(value)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="card">
+          <h3 className="mb-1 font-serif text-2xl leading-tight text-foreground">Your pinnacles</h3>
+          <p className="mb-3 text-sm text-foreground-muted">Four major life chapters, each with its own theme.</p>
+          <div className="divide-y divide-border">
+            {pinnacleRows.map(([label, p]) => {
+              const r = numerologyReading(p.number);
+              return (
+                <div key={label} className="flex items-start gap-3 py-3">
+                  <span
+                    className="grid h-11 w-11 flex-none place-items-center rounded-full font-serif text-lg italic text-foreground"
+                    style={{
+                      background: `radial-gradient(circle at 35% 30%, #fff, color-mix(in srgb, ${r.color} 18%, white) 80%)`,
+                      boxShadow: `inset 0 0 0 1.5px ${r.color}`,
+                    }}
+                  >
+                    {displayNumber(p.number)}
+                  </span>
+                  <div>
+                    <p className="text-xs font-bold text-foreground-subtle">
+                      {label} pinnacle &middot; age {p.fromAge}
+                      {p.toAge ? `–${p.toAge}` : "+"}
+                    </p>
+                    <p className="text-sm leading-snug text-foreground">{r.lifePath}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <Link
+          href="/angel-numbers"
+          className="btn-soft flex min-h-[44px] w-full items-center justify-center px-5 text-sm"
+        >
+          Keep seeing repeating numbers? Look them up
+        </Link>
 
         <p className="px-3 text-center text-xs text-foreground-subtle">
           Cycles follow the calendar year. Numerology is a traditional practice offered for reflection and

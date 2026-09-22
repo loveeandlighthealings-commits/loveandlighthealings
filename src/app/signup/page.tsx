@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SparkleIcon } from "@/app/_components/icons";
 import { signup } from "./actions";
 
 export default async function SignupPage({
@@ -10,10 +11,13 @@ export default async function SignupPage({
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
-      <div className="w-full max-w-sm space-y-6">
+      <div className="card w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-foreground">Create your account</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <span className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-accent-soft text-accent">
+            <SparkleIcon width={22} height={22} />
+          </span>
+          <h1 className="font-serif text-4xl tracking-tight text-foreground">Create your account</h1>
+          <p className="mt-1 text-sm text-foreground-muted">
             Start tracking your daily wellness, your way.
           </p>
         </div>
@@ -34,7 +38,7 @@ export default async function SignupPage({
               name="fullName"
               type="text"
               autoComplete="name"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+              className="w-full rounded-2xl border border-border bg-white/90 px-3.5 py-2.5 text-[16px] text-foreground outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </div>
 
@@ -48,7 +52,7 @@ export default async function SignupPage({
               type="email"
               required
               autoComplete="email"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+              className="w-full rounded-2xl border border-border bg-white/90 px-3.5 py-2.5 text-[16px] text-foreground outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </div>
 
@@ -63,21 +67,21 @@ export default async function SignupPage({
               required
               minLength={6}
               autoComplete="new-password"
-              className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+              className="w-full rounded-2xl border border-border bg-white/90 px-3.5 py-2.5 text-[16px] text-foreground outline-none focus:border-accent focus:ring-4 focus:ring-accent/10"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+            className="btn-primary flex min-h-[48px] w-full items-center justify-center px-5 text-[14.5px]"
           >
             Sign up
           </button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="text-center text-sm text-foreground-muted">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-accent">
+          <Link href="/login" className="font-medium text-accent-dark">
             Sign in
           </Link>
         </p>

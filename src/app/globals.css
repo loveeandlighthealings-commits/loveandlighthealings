@@ -74,6 +74,108 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/*
+ * Fixed dawn aura behind everything: frosted cards glide over it as the
+ * page scrolls. Ported from reference/prototype.html's body::before/::after.
+ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(62vmax 46vmax at 6% 3%, rgba(255, 188, 160, 0.62), transparent 60%),
+    radial-gradient(56vmax 46vmax at 98% 6%, rgba(178, 158, 255, 0.56), transparent 62%),
+    radial-gradient(62vmax 50vmax at 2% 98%, rgba(146, 228, 202, 0.44), transparent 60%),
+    radial-gradient(60vmax 50vmax at 100% 94%, rgba(255, 168, 204, 0.42), transparent 62%),
+    linear-gradient(180deg, #fcf9ff, #f5f0fc);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.9;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .26 0 0 0 0 .5 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * Frosted glass card with a thin pearly gradient edge, ported from the
+ * prototype's .card. The gradient border uses a masked pseudo-element
+ * since CSS has no native gradient-border-radius primitive.
+ */
+.card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  border-radius: 32px;
+  padding: 24px 22px;
+  box-shadow:
+    0 1px 1px rgba(70, 50, 140, 0.03),
+    0 22px 44px -26px rgba(90, 64, 180, 0.34);
+}
+
+.card::before,
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  background: linear-gradient(140deg, #fff 0%, rgba(208, 192, 255, 0.75) 48%, rgba(255, 208, 188, 0.8) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.tile {
+  position: relative;
+}
+
+.tile::before {
+  background: linear-gradient(140deg, #fff, rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0.7));
+}
+
+/* Gradient pill buttons, ported from the prototype's .btn / .btn.soft / .btn.ghost. */
+.btn-primary {
+  appearance: none;
+  border: 0;
+  background: linear-gradient(135deg, #7c5fe6, #6a4dd4);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 999px;
+  box-shadow:
+    0 14px 26px -14px rgba(106, 77, 212, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: transform 0.1s ease;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-soft {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  border-radius: 999px;
+  font-weight: 700;
 }
 
 /* The Today screen's hero orb has a slow "breathing" halo behind it. */

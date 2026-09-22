@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { INTERESTS } from "@/lib/interests";
+import { InterestIcon, interestThemeVars } from "@/app/_components/interest-visuals";
 import { saveInterests } from "./actions";
 
 export default async function OnboardingPage({
@@ -30,12 +31,12 @@ export default async function OnboardingPage({
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
-      <div className="w-full max-w-lg space-y-6">
+      <div className="card w-full max-w-lg space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-foreground">
+          <h1 className="font-serif text-4xl tracking-tight text-foreground">
             {isEditing ? "Edit what you see" : "What would you like to see?"}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-foreground-muted">
             Pick as many as you like. Your dashboard will only show these — you
             can change your mind anytime.
           </p>
@@ -48,32 +49,37 @@ export default async function OnboardingPage({
         )}
 
         <form action={saveInterests} className="space-y-3">
-          {INTERESTS.map((interest) => (
-            <label
-              key={interest.key}
-              className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-white p-4 hover:bg-muted"
-            >
-              <input
-                type="checkbox"
-                name="interests"
-                value={interest.key}
-                defaultChecked={selected.has(interest.key)}
-                className="mt-1 h-5 w-5 flex-none accent-accent"
-              />
-              <span>
-                <span className="block font-medium text-foreground">
-                  {interest.label}
+          {INTERESTS.map((interest) => {
+            const vars = interestThemeVars(interest.theme);
+            return (
+              <label
+                key={interest.key}
+                className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-white/85 p-4 transition-colors hover:bg-white has-[:checked]:border-transparent has-[:checked]:shadow-[0_0_0_2px_var(--ring-color)]"
+                style={{ ["--ring-color" as string]: vars.color, background: `linear-gradient(160deg, ${vars.soft} 0%, rgba(255,255,255,0) 65%)` }}
+              >
+                <InterestIcon theme={interest.theme} icon={interest.icon} />
+                <span className="flex-1">
+                  <span className="block font-medium text-foreground">
+                    {interest.label}
+                  </span>
+                  <span className="block text-sm text-foreground-muted">
+                    {interest.description}
+                  </span>
                 </span>
-                <span className="block text-sm text-muted-foreground">
-                  {interest.description}
-                </span>
-              </span>
-            </label>
-          ))}
+                <input
+                  type="checkbox"
+                  name="interests"
+                  value={interest.key}
+                  defaultChecked={selected.has(interest.key)}
+                  className="mt-1 h-5 w-5 flex-none accent-accent"
+                />
+              </label>
+            );
+          })}
 
           <button
             type="submit"
-            className="w-full rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+            className="btn-primary flex min-h-[48px] w-full items-center justify-center px-5 text-[14.5px]"
           >
             {isEditing ? "Save changes" : "Continue"}
           </button>

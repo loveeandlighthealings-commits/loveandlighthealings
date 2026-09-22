@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { INTERESTS } from "@/lib/interests";
 import { InterestIcon, interestThemeVars } from "@/app/_components/interest-visuals";
+import { CompassIcon } from "@/app/_components/icons";
+import { PageIcon } from "@/app/_components/page-icon";
 import { saveInterests } from "./actions";
 
 export default async function OnboardingPage({
@@ -22,9 +24,13 @@ export default async function OnboardingPage({
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
-      <div className="card w-full max-w-lg space-y-6">
+      <div
+        className="card w-full max-w-lg space-y-6"
+        style={{ background: "linear-gradient(160deg, var(--color-accent-soft) 0%, rgba(255,255,255,0.74) 55%)" }}
+      >
         <div className="text-center">
-          <h1 className="font-serif text-4xl tracking-tight text-foreground">
+          <PageIcon icon={CompassIcon} color="var(--color-accent)" />
+          <h1 className="mt-3 font-serif text-4xl tracking-tight text-foreground">
             {isEditing ? "Edit what you see" : "What would you like to see?"}
           </h1>
           <p className="mt-1 text-sm text-foreground-muted">

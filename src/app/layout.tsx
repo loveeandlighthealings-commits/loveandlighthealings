@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Manrope } from "next/font/google";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/current-user";
 import "./globals.css";
 
 // Headings and big numbers, per docs/build-brief.md section 8.
@@ -30,21 +30,14 @@ export const viewport = {
   initialScale: 1,
 };
 
-/** The signed-in user's chosen theme, or "default" for signed-out visitors. */
+/**
+ * The signed-in user's chosen theme, or "default" for signed-out visitors.
+ * Uses the shared, request-cached getCurrentProfile() so this doesn't cost
+ * its own round trip when the page below also needs the profile.
+ */
 async function currentTheme(): Promise<string> {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return "default";
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("theme")
-      .eq("user_id", user.id)
-      .single();
-
+    const profile = await getCurrentProfile();
     return profile?.theme ?? "default";
   } catch {
     return "default";

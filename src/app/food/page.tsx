@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { todayInTimezone } from "@/lib/date";
 import { getFoodLog } from "@/lib/food-data";
 import { MEAL_SLOTS } from "@/lib/meal-slots";
@@ -7,19 +7,10 @@ import { adjustEntryQty, deleteEntry } from "@/app/food-actions";
 import { TabBar } from "@/app/_components/tab-bar";
 
 export default async function FoodPage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("timezone, diet, cal_goal, interests")
-    .eq("user_id", user.id)
-    .single();
-
+  const profile = await getCurrentProfile();
   const hasNumerology = (profile?.interests ?? []).includes("numerology_daily");
   const day = todayInTimezone(profile?.timezone ?? "Asia/Kolkata");
   const log = await getFoodLog(user.id, day);

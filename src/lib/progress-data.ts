@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/current-user";
 import type { ActivityLevel, BmiScale, Sex } from "@/lib/formulas";
 
 export interface ProgressProfile {
@@ -30,16 +31,11 @@ export interface ProgressData {
 export async function getProgressData(userId: string): Promise<ProgressData> {
   const supabase = await createClient();
 
-  const [profileRes, weightsRes] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("height_cm, start_kg, target_kg, cal_goal, water_goal_ml, steps_goal, sleep_goal_h, bmi_scale, age, sex, activity")
-      .eq("user_id", userId)
-      .single(),
+  const [p, weightsRes] = await Promise.all([
+    // Request-cached -- free here if the calling page already fetched it.
+    getCurrentProfile(),
     supabase.from("weights").select("day, kg").eq("user_id", userId).order("day", { ascending: true }),
   ]);
-
-  const p = profileRes.data;
   const weights: WeightEntry[] = weightsRes.data ?? [];
 
   return {

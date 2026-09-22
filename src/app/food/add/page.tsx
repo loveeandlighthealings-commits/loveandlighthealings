@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { searchFoods } from "@/lib/food-data";
 import { mealSlotLabel } from "@/lib/meal-slots";
 import { logFood } from "@/app/food-actions";
@@ -19,14 +19,10 @@ export default async function AddFoodPage({
   searchParams: Promise<{ slot?: string; q?: string; cuisine?: string }>;
 }) {
   const { slot = "lunch", q = "", cuisine = "all" } = await searchParams;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase.from("profiles").select("diet, interests").eq("user_id", user.id).single();
+  const profile = await getCurrentProfile();
   const hasNumerology = (profile?.interests ?? []).includes("numerology_daily");
   const results = await searchFoods(user.id, { query: q, cuisine, userDiet: profile?.diet ?? null });
 

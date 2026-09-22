@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { todayInTimezone } from "@/lib/date";
 import {
   calculateChallenges,
@@ -50,19 +50,10 @@ export default async function NumerologyPage({
   searchParams: Promise<{ date?: string; focus?: string; edit?: string; error?: string }>;
 }) {
   const { date: dateParam, focus: focusParam, edit, error } = await searchParams;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("birth_date, full_name, timezone, interests")
-    .eq("user_id", user.id)
-    .single();
-
+  const profile = await getCurrentProfile();
   const hasHealthFood = (profile?.interests ?? []).includes("health_food");
   const timezone = profile?.timezone ?? "Asia/Kolkata";
 

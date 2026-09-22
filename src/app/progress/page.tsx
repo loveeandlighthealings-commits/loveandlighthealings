@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { getProgressData } from "@/lib/progress-data";
 import {
   ACTIVITY_FACTORS,
@@ -27,18 +27,14 @@ export default async function ProgressPage({
   searchParams: Promise<{ bmiHeight?: string; bmiWeight?: string }>;
 }) {
   const { bmiHeight, bmiWeight } = await searchParams;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   if (!user) return null;
 
   const data = await getProgressData(user.id);
   const { profile, weights, currentWeight } = data;
 
-  const { data: interestsRow } = await supabase.from("profiles").select("interests").eq("user_id", user.id).single();
-  const hasNumerology = (interestsRow?.interests ?? []).includes("numerology_daily");
+  const cachedProfile = await getCurrentProfile();
+  const hasNumerology = (cachedProfile?.interests ?? []).includes("numerology_daily");
 
   return (
     <div className="flex flex-1 flex-col items-center px-4 py-10 pb-32">

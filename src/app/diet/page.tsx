@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { DIET_TIERS } from "@/lib/diet";
 import { TabBar } from "@/app/_components/tab-bar";
 import { setDiet } from "./actions";
@@ -10,17 +10,13 @@ export default async function DietPage({
   searchParams: Promise<{ error?: string; redirectTo?: string }>;
 }) {
   const { error, redirectTo } = await searchParams;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/login");
   }
 
-  const { data: profile } = await supabase.from("profiles").select("diet, interests").eq("user_id", user.id).single();
+  const profile = await getCurrentProfile();
   const current = profile?.diet ?? null;
   const hasNumerology = (profile?.interests ?? []).includes("numerology_daily");
 

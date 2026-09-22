@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { INTERESTS } from "@/lib/interests";
 import { InterestIcon, interestThemeVars } from "@/app/_components/interest-visuals";
 import { saveInterests } from "./actions";
@@ -10,22 +10,13 @@ export default async function OnboardingPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect("/login");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("interests")
-    .eq("user_id", user.id)
-    .single();
-
+  const profile = await getCurrentProfile();
   const selected = new Set(profile?.interests ?? []);
   const isEditing = selected.size > 0;
 

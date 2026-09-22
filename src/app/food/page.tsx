@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { todayInTimezone } from "@/lib/date";
 import { getFoodLog, type Slot } from "@/lib/food-data";
 import { adjustEntryQty, deleteEntry } from "@/app/food-actions";
+import { TabBar } from "@/app/_components/tab-bar";
 
 const SLOT_LABELS: Record<Slot, string> = { b: "Breakfast", l: "Lunch", s: "Snack", d: "Dinner" };
 const SLOTS: Slot[] = ["b", "l", "s", "d"];
@@ -27,7 +28,7 @@ export default async function FoodPage() {
   const pct = log.calGoal ? Math.min(100, Math.round((log.totalKcal / log.calGoal) * 100)) : null;
 
   return (
-    <div className="flex flex-1 flex-col items-center px-4 py-10">
+    <div className="flex flex-1 flex-col items-center px-4 py-10 pb-32">
       <div className="w-full max-w-lg space-y-4">
         <div className="text-center">
           <h1 className="font-serif text-[32px] leading-none tracking-tight text-foreground">Food</h1>
@@ -163,6 +164,8 @@ export default async function FoodPage() {
           );
         })}
       </div>
+
+      <TabBar hasHealthFood />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { searchFoods } from "@/lib/food-data";
 import { logFood } from "@/app/food-actions";
+import { TabBar } from "@/app/_components/tab-bar";
 
 const SLOT_LABELS: Record<string, string> = { b: "Breakfast", l: "Lunch", s: "Snack", d: "Dinner" };
 const CUISINES = ["all", "mine", "Indian", "Italian", "Mexican", "Asian", "Mediterranean", "Western", "Basics"];
@@ -29,7 +30,7 @@ export default async function AddFoodPage({
   const results = await searchFoods(user.id, { query: q, cuisine, userDiet: profile?.diet ?? null });
 
   return (
-    <div className="flex flex-1 flex-col items-center px-4 py-10">
+    <div className="flex flex-1 flex-col items-center px-4 py-10 pb-32">
       <div className="w-full max-w-lg space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="font-serif text-[28px] leading-none tracking-tight text-foreground">
@@ -106,6 +107,8 @@ export default async function AddFoodPage({
           + Add your own food
         </Link>
       </div>
+
+      <TabBar hasHealthFood />
     </div>
   );
 }

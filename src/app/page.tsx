@@ -6,8 +6,8 @@ import { getTodayData } from "@/lib/today";
 import { FastingTimer } from "./_components/fasting-timer";
 import { HeroOrb } from "./_components/hero-orb";
 import { InterestIcon, interestThemeVars } from "./_components/interest-visuals";
+import { TabBar } from "./_components/tab-bar";
 import { TrackerTiles } from "./_components/tracker-tiles";
-import { signOut } from "./actions";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -37,7 +37,7 @@ export default async function Home() {
   const activeFast = hasHealthFood ? await getActiveFast(user.id) : null;
 
   return (
-    <div className="flex flex-1 flex-col items-center px-4 py-10">
+    <div className="flex flex-1 flex-col items-center px-4 py-10 pb-32">
       <div className="w-full max-w-lg space-y-6">
         <div className="flex items-end justify-between px-1.5 pb-2 pt-3">
           <h1 className="font-serif text-[32px] leading-none tracking-tight text-foreground">
@@ -99,29 +99,9 @@ export default async function Home() {
             );
           })}
         </div>
-
-        <div className="flex flex-col items-center gap-3 pt-2">
-          <div className="flex items-center gap-4">
-            <Link href="/onboarding" className="text-sm font-medium text-accent-dark hover:underline">
-              Edit what you see
-            </Link>
-            <Link href="/appearance" className="text-sm font-medium text-accent-dark hover:underline">
-              Choose your look
-            </Link>
-            {hasHealthFood && (
-              <Link href="/diet" className="text-sm font-medium text-accent-dark hover:underline">
-                Diet preference
-              </Link>
-            )}
-          </div>
-
-          <form action={signOut}>
-            <button type="submit" className="btn-ghost flex min-h-[44px] items-center justify-center px-5 text-sm">
-              Sign out
-            </button>
-          </form>
-        </div>
       </div>
+
+      <TabBar hasHealthFood={hasHealthFood} />
     </div>
   );
 }

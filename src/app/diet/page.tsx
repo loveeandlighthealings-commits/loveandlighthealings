@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { DIET_TIERS } from "@/lib/diet";
+import { TabBar } from "@/app/_components/tab-bar";
 import { setDiet } from "./actions";
 
 export default async function DietPage({
@@ -23,7 +24,7 @@ export default async function DietPage({
   const current = profile?.diet ?? null;
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
+    <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 pb-32">
       <div className="card w-full max-w-lg space-y-6">
         <div className="text-center">
           <h1 className="font-serif text-4xl tracking-tight text-foreground">What do you eat?</h1>
@@ -65,6 +66,8 @@ export default async function DietPage({
           </button>
         </form>
       </div>
+
+      <TabBar hasHealthFood />
     </div>
   );
 }

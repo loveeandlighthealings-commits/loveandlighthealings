@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { THEMES } from "@/lib/themes";
+import { PaletteIcon } from "@/app/_components/icons";
+import { PageIcon } from "@/app/_components/page-icon";
 import { TabBar } from "@/app/_components/tab-bar";
 import { setTheme } from "./actions";
 
@@ -23,9 +25,13 @@ export default async function AppearancePage({
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 pb-32">
-      <div className="card w-full max-w-lg space-y-6">
+      <div
+        className="card w-full max-w-lg space-y-6"
+        style={{ background: "linear-gradient(160deg, var(--color-accent-soft) 0%, rgba(255,255,255,0.74) 55%)" }}
+      >
         <div className="text-center">
-          <h1 className="font-serif text-4xl tracking-tight text-foreground">Choose your look</h1>
+          <PageIcon icon={PaletteIcon} color="var(--color-accent)" />
+          <h1 className="mt-3 font-serif text-4xl tracking-tight text-foreground">Choose your look</h1>
           <p className="mt-1 text-sm text-foreground-muted">
             Pick the mood that feels right. You can change this anytime.
           </p>

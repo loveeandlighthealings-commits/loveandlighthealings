@@ -15,6 +15,8 @@ import {
   updateGoals,
   useCalorieSuggestion,
 } from "@/app/progress-actions";
+import { FlameIcon, PulseIcon, ScaleIcon, SlidersIcon, TargetIcon } from "@/app/_components/icons";
+import { SectionIcon } from "@/app/_components/page-icon";
 import { TabBar } from "@/app/_components/tab-bar";
 
 const fieldClass =
@@ -112,7 +114,10 @@ function GoalCard({
 
   return (
     <section className="card">
-      <h3 className="mb-3 font-serif text-2xl leading-tight text-foreground">How close am I?</h3>
+      <div className="mb-3 flex items-center gap-3">
+        <SectionIcon icon={TargetIcon} color="var(--color-weight)" />
+        <h3 className="font-serif text-2xl leading-tight text-foreground">How close am I?</h3>
+      </div>
       {body}
     </section>
   );
@@ -125,7 +130,10 @@ function NumbersCard({
 }) {
   return (
     <section className="card">
-      <h3 className="mb-3 font-serif text-2xl leading-tight text-foreground">Your numbers</h3>
+      <div className="mb-3 flex items-center gap-3">
+        <SectionIcon icon={SlidersIcon} color="var(--color-accent)" />
+        <h3 className="font-serif text-2xl leading-tight text-foreground">Your numbers</h3>
+      </div>
       <form action={updateGoals} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -200,7 +208,10 @@ function CalorieHelperCard({
 
   return (
     <section className="card">
-      <h3 className="mb-3 font-serif text-2xl leading-tight text-foreground">Calorie goal helper</h3>
+      <div className="mb-3 flex items-center gap-3">
+        <SectionIcon icon={FlameIcon} color="var(--color-calories)" />
+        <h3 className="font-serif text-2xl leading-tight text-foreground">Calorie goal helper</h3>
+      </div>
       <form action={updateCalorieInputs} className="grid grid-cols-3 gap-3">
         <div>
           <label className={labelClass} htmlFor="age">Age</label>
@@ -275,7 +286,10 @@ function BmiCard({
 
   return (
     <section className="card">
-      <h3 className="mb-3 font-serif text-2xl leading-tight text-foreground">BMI calculator</h3>
+      <div className="mb-3 flex items-center gap-3">
+        <SectionIcon icon={ScaleIcon} color="var(--color-weight)" />
+        <h3 className="font-serif text-2xl leading-tight text-foreground">BMI calculator</h3>
+      </div>
       <form method="get" className="grid grid-cols-2 gap-3">
         <div>
           <label className={labelClass} htmlFor="bmiHeight">Height (cm)</label>
@@ -313,7 +327,10 @@ function WeightLogCard({ weights }: { weights: { day: string; kg: number }[] }) 
 
   return (
     <section className="card">
-      <h3 className="mb-3 font-serif text-2xl leading-tight text-foreground">Weight log</h3>
+      <div className="mb-3 flex items-center gap-3">
+        <SectionIcon icon={PulseIcon} color="var(--color-weight)" />
+        <h3 className="font-serif text-2xl leading-tight text-foreground">Weight log</h3>
+      </div>
       {weights.length < 2 && (
         <p className="mb-3 text-sm text-foreground-muted">Log at least two weigh-ins to see your trend.</p>
       )}

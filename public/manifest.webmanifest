@@ -4,8 +4,8 @@
   "description": "A daily wellness tracker: water, steps, sleep, food, recipes, routines and more.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fffaf7",
-  "theme_color": "#fffaf7",
+  "background_color": "#FAF7FD",
+  "theme_color": "#FAF7FD",
   "icons": [
     {
       "src": "/next.svg",

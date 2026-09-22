@@ -18,15 +18,16 @@ export function HeroOrb({ score }: { score: number }) {
     <div className="relative mx-auto mb-1 mt-3 h-[250px] w-[250px]">
       <svg
         viewBox="0 0 236 236"
-        className="block h-full w-full drop-shadow-[0_18px_24px_rgba(238,108,154,0.26)]"
+        className="block h-full w-full"
+        style={{ filter: "drop-shadow(0 18px 24px color-mix(in srgb, var(--orb-2) 26%, transparent))" }}
         role="img"
         aria-label={`${score} percent of today's goals met`}
       >
         <defs>
           <linearGradient id="heroRing" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#FFA07E" />
-            <stop offset=".55" stopColor="#EE6C9A" />
-            <stop offset="1" stopColor="#7A5CE2" />
+            <stop offset="0" style={{ stopColor: "var(--orb-1)" }} />
+            <stop offset=".55" style={{ stopColor: "var(--orb-2)" }} />
+            <stop offset="1" style={{ stopColor: "var(--orb-3)" }} />
           </linearGradient>
           <radialGradient id="heroCenter" cx=".38" cy=".3" r=".85">
             <stop offset="0" stopColor="#FFFFFF" />
@@ -60,7 +61,14 @@ export function HeroOrb({ score }: { score: number }) {
         )}
 
         {showTip && (
-          <circle cx={tipX.toFixed(1)} cy={tipY.toFixed(1)} r="6.5" fill="#fff" stroke="#EE6C9A" strokeWidth="3" />
+          <circle
+            cx={tipX.toFixed(1)}
+            cy={tipY.toFixed(1)}
+            r="6.5"
+            fill="#fff"
+            style={{ stroke: "var(--orb-2)" }}
+            strokeWidth="3"
+          />
         )}
       </svg>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Manrope } from "next/font/google";
+import { createClient } from "@/lib/supabase/server";
 import "./globals.css";
 
 // Headings and big numbers, per docs/build-brief.md section 8.
@@ -29,10 +30,34 @@ export const viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+/** The signed-in user's chosen theme, or "default" for signed-out visitors. */
+async function currentTheme(): Promise<string> {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return "default";
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("theme")
+      .eq("user_id", user.id)
+      .single();
+
+    return profile?.theme ?? "default";
+  } catch {
+    return "default";
+  }
+}
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const theme = await currentTheme();
+
   return (
     <html
       lang="en"
+      data-theme={theme}
       className={`${instrumentSerif.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">

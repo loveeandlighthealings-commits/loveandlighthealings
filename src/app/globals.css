@@ -1,22 +1,29 @@
 @import "tailwindcss";
 
+/*
+ * This app is light-themed only, by design (see CLAUDE.md). No dark-mode
+ * media query on purpose: system dark mode should not change these colors.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fffaf7;
+  --foreground: #2c2521;
+  --accent: #c9866b;
+  --accent-foreground: #ffffff;
+  --muted: #f2e9e4;
+  --muted-foreground: #7a6f68;
+  --border: #e8ddd6;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

@@ -3,6 +3,7 @@ import {
   calculateBmi,
   calorieGoalOptions,
   dayScore,
+  dayVerdict,
   foodPct,
   goalProgress,
   sleepHours,
@@ -71,6 +72,37 @@ describe("dayScore", () => {
       steps: { pct: 0 },
     });
     expect(score).toBe(50);
+  });
+});
+
+describe("dayVerdict", () => {
+  it("shows a fresh-page message when nothing has been logged", () => {
+    const verdict = dayVerdict(0, {}, false);
+    expect(verdict.headline).toBe("A fresh page");
+  });
+
+  it("scales the headline with the score once something is logged", () => {
+    expect(dayVerdict(95, { water: { pct: 1 } }, true).headline).toBe("Strong day");
+    expect(dayVerdict(70, { water: { pct: 1 } }, true).headline).toBe("Good day");
+    expect(dayVerdict(40, { water: { pct: 1 } }, true).headline).toBe("Halfway there");
+    expect(dayVerdict(10, { water: { pct: 1 } }, true).headline).toBe("Just getting started");
+  });
+
+  it("calls out the lowest component that isn't fully met", () => {
+    const verdict = dayVerdict(75, { water: { pct: 1 }, steps: { pct: 0.4 } }, true);
+    expect(verdict.subtext).toContain("Steps");
+    expect(verdict.subtext).toContain("40%");
+  });
+
+  it("never calls out calories as the thing to catch up on", () => {
+    const verdict = dayVerdict(50, { food: { pct: 0.1 }, steps: { pct: 1 } }, true);
+    expect(verdict.subtext).not.toContain("Calories");
+    expect(verdict.subtext).toContain("Every target is covered");
+  });
+
+  it("says every target is covered when nothing (other than food) is below 100%", () => {
+    const verdict = dayVerdict(100, { water: { pct: 1 }, steps: { pct: 1 } }, true);
+    expect(verdict.subtext).toContain("Every target is covered");
   });
 });
 

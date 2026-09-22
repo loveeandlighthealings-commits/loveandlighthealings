@@ -60,6 +60,51 @@ export function dayScore(components: Record<string, ScoreComponent>): number {
   return Math.round((100 * sum) / applicable.length);
 }
 
+const METRIC_LABELS: Record<string, string> = {
+  water: "Water",
+  steps: "Steps",
+  sleep: "Sleep",
+  food: "Calories",
+  routine: "Routine",
+  workout: "Workout",
+};
+
+export interface DayVerdict {
+  headline: string;
+  subtext: string;
+}
+
+/**
+ * The Today screen's headline and one-line summary under the hero score.
+ * `hasActivity` is whether anything at all has been logged today -- with
+ * nothing logged, the score is trivially 0 but the copy shouldn't scold.
+ */
+export function dayVerdict(
+  score: number,
+  components: Record<string, ScoreComponent>,
+  hasActivity: boolean
+): DayVerdict {
+  if (!hasActivity) {
+    return {
+      headline: "A fresh page",
+      subtext: "Start with a glass of water or tick off your first routine item.",
+    };
+  }
+
+  const headline =
+    score >= 90 ? "Strong day" : score >= 65 ? "Good day" : score >= 35 ? "Halfway there" : "Just getting started";
+
+  const lowest = Object.entries(components)
+    .filter(([key, c]) => key !== "food" && c.pct != null && (c.pct as number) < 1)
+    .sort((a, b) => (a[1].pct as number) - (b[1].pct as number))[0];
+
+  const subtext = lowest
+    ? `${score}% of your goals met. ${METRIC_LABELS[lowest[0]] ?? lowest[0]} has the furthest to go (${Math.round((lowest[1].pct as number) * 100)}%).`
+    : `${score}% of your goals met. Every target is covered.`;
+
+  return { headline, subtext };
+}
+
 // ---------------------------------------------------------------------
 // BMI
 // ---------------------------------------------------------------------

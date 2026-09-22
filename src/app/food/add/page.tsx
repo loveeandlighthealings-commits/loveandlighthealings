@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { searchFoods } from "@/lib/food-data";
+import { mealSlotLabel } from "@/lib/meal-slots";
 import { logFood } from "@/app/food-actions";
 import { TabBar } from "@/app/_components/tab-bar";
 
-const SLOT_LABELS: Record<string, string> = { b: "Breakfast", l: "Lunch", s: "Snack", d: "Dinner" };
 const CUISINES = ["all", "mine", "Indian", "Italian", "Mexican", "Asian", "Mediterranean", "Western", "Basics"];
 
 function cuisineHref(slot: string, cuisine: string, q: string) {
@@ -18,7 +18,7 @@ export default async function AddFoodPage({
 }: {
   searchParams: Promise<{ slot?: string; q?: string; cuisine?: string }>;
 }) {
-  const { slot = "l", q = "", cuisine = "all" } = await searchParams;
+  const { slot = "lunch", q = "", cuisine = "all" } = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -34,7 +34,7 @@ export default async function AddFoodPage({
       <div className="w-full max-w-lg space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="font-serif text-[28px] leading-none tracking-tight text-foreground">
-            Add to {SLOT_LABELS[slot] ?? "meal"}
+            Add to {mealSlotLabel(slot)}
           </h1>
           <Link href="/food" className="text-sm font-medium text-accent-dark hover:underline">
             Done

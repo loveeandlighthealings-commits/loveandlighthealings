@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { todayInTimezone } from "@/lib/date";
-import { getFoodLog, type Slot } from "@/lib/food-data";
+import { getFoodLog } from "@/lib/food-data";
+import { MEAL_SLOTS } from "@/lib/meal-slots";
 import { adjustEntryQty, deleteEntry } from "@/app/food-actions";
 import { TabBar } from "@/app/_components/tab-bar";
-
-const SLOT_LABELS: Record<Slot, string> = { b: "Breakfast", l: "Lunch", s: "Snack", d: "Dinner" };
-const SLOTS: Slot[] = ["b", "l", "s", "d"];
 
 export default async function FoodPage() {
   const supabase = await createClient();
@@ -93,12 +91,12 @@ export default async function FoodPage() {
           </div>
         </section>
 
-        {SLOTS.map((slot) => {
+        {MEAL_SLOTS.map(({ key: slot, label }) => {
           const s = log.slots[slot];
           return (
             <section key={slot} className="card">
               <div className="flex items-start justify-between gap-2">
-                <h3 className="font-serif text-2xl leading-tight text-foreground">{SLOT_LABELS[slot]}</h3>
+                <h3 className="font-serif text-2xl leading-tight text-foreground">{label}</h3>
                 {s.kcal > 0 && (
                   <div className="font-serif text-xl text-foreground">
                     {Math.round(s.kcal)}{" "}

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { todayInTimezone } from "@/lib/date";
+import { mealSlotSchema } from "@/lib/meal-slots";
 
 async function currentUserAndDay() {
   const supabase = await createClient();
@@ -23,11 +24,9 @@ async function currentUserAndDay() {
   return { supabase, user, day };
 }
 
-const slotSchema = z.enum(["b", "l", "s", "d"]);
-
 const logSchema = z.object({
   foodId: z.string().min(1),
-  slot: slotSchema,
+  slot: mealSlotSchema,
   qty: z.coerce.number().min(0.5).max(20),
 });
 
@@ -127,7 +126,7 @@ const customFoodSchema = z.object({
   protein: z.coerce.number().min(0).max(500).optional(),
   carbs: z.coerce.number().min(0).max(500).optional(),
   fat: z.coerce.number().min(0).max(500).optional(),
-  slot: slotSchema.optional(),
+  slot: mealSlotSchema.optional(),
 });
 
 export async function saveCustomFood(formData: FormData) {

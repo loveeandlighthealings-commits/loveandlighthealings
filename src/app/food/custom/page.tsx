@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import { saveCustomFood } from "@/app/food-actions";
 import { TabBar } from "@/app/_components/tab-bar";
 
@@ -11,6 +12,17 @@ export default async function CustomFoodPage({
   searchParams: Promise<{ slot?: string }>;
 }) {
   const { slot } = await searchParams;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let hasNumerology = false;
+  if (user) {
+    const { data: profile } = await supabase.from("profiles").select("interests").eq("user_id", user.id).single();
+    hasNumerology = (profile?.interests ?? []).includes("numerology_daily");
+  }
 
   return (
     <div className="flex flex-1 flex-col items-center px-4 py-10 pb-32">
@@ -77,7 +89,7 @@ export default async function CustomFoodPage({
         </form>
       </div>
 
-      <TabBar hasHealthFood />
+      <TabBar hasHealthFood hasNumerology={hasNumerology} />
     </div>
   );
 }

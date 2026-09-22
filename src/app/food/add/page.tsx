@@ -26,7 +26,8 @@ export default async function AddFoodPage({
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase.from("profiles").select("diet").eq("user_id", user.id).single();
+  const { data: profile } = await supabase.from("profiles").select("diet, interests").eq("user_id", user.id).single();
+  const hasNumerology = (profile?.interests ?? []).includes("numerology_daily");
   const results = await searchFoods(user.id, { query: q, cuisine, userDiet: profile?.diet ?? null });
 
   return (
@@ -108,7 +109,7 @@ export default async function AddFoodPage({
         </Link>
       </div>
 
-      <TabBar hasHealthFood />
+      <TabBar hasHealthFood hasNumerology={hasNumerology} />
     </div>
   );
 }

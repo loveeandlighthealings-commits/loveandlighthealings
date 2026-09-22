@@ -37,6 +37,9 @@ export default async function ProgressPage({
   const data = await getProgressData(user.id);
   const { profile, weights, currentWeight } = data;
 
+  const { data: interestsRow } = await supabase.from("profiles").select("interests").eq("user_id", user.id).single();
+  const hasNumerology = (interestsRow?.interests ?? []).includes("numerology_daily");
+
   return (
     <div className="flex flex-1 flex-col items-center px-4 py-10 pb-32">
       <div className="w-full max-w-lg space-y-4">
@@ -53,7 +56,7 @@ export default async function ProgressPage({
         <WeightLogCard weights={weights} />
       </div>
 
-      <TabBar hasHealthFood />
+      <TabBar hasHealthFood hasNumerology={hasNumerology} />
     </div>
   );
 }

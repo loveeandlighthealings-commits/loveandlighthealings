@@ -20,8 +20,9 @@ export default async function DietPage({
     redirect("/login");
   }
 
-  const { data: profile } = await supabase.from("profiles").select("diet").eq("user_id", user.id).single();
+  const { data: profile } = await supabase.from("profiles").select("diet, interests").eq("user_id", user.id).single();
   const current = profile?.diet ?? null;
+  const hasNumerology = (profile?.interests ?? []).includes("numerology_daily");
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 pb-32">
@@ -67,7 +68,7 @@ export default async function DietPage({
         </form>
       </div>
 
-      <TabBar hasHealthFood />
+      <TabBar hasHealthFood hasNumerology={hasNumerology} />
     </div>
   );
 }

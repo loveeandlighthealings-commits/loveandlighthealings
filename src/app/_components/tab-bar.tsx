@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { FlameIcon, MoreIcon, SparkleIcon, SunIcon } from "./icons";
+import { FlameIcon, MoonIcon, MoreIcon, SparkleIcon, SunIcon } from "./icons";
 
 interface Tab {
   href: string;
@@ -16,13 +16,22 @@ interface Tab {
  * spirit from reference/prototype.html's nav.tabs. The active tab expands
  * into a labelled pill; inactive tabs show only their icon.
  */
-export function TabBar({ hasHealthFood }: { hasHealthFood: boolean }) {
+export function TabBar({
+  hasHealthFood,
+  hasNumerology = false,
+}: {
+  hasHealthFood: boolean;
+  hasNumerology?: boolean;
+}) {
   const pathname = usePathname();
 
   const tabs: Tab[] = [{ href: "/", label: "Today", icon: <SunIcon width={20} height={20} /> }];
   if (hasHealthFood) {
     tabs.push({ href: "/food", label: "Food", icon: <FlameIcon width={20} height={20} /> });
-    tabs.push({ href: "/progress", label: "Progress", icon: <SparkleIcon width={20} height={20} /> });
+    tabs.push({ href: "/progress", label: "Progress", icon: <MoonIcon width={20} height={20} /> });
+  }
+  if (hasNumerology) {
+    tabs.push({ href: "/numerology", label: "Numerology", icon: <SparkleIcon width={20} height={20} /> });
   }
   tabs.push({ href: "/more", label: "More", icon: <MoreIcon width={20} height={20} /> });
 

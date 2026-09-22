@@ -1,33 +1,77 @@
 @import "tailwindcss";
 
 /*
- * This app is light-themed only, by design (see CLAUDE.md). No dark-mode
- * media query on purpose: system dark mode should not change these colors.
+ * Design tokens per docs/build-brief.md section 8 and reference/prototype.html.
+ * Light theme only, by design (see CLAUDE.md) -- no dark-mode media query.
  */
 :root {
-  --background: #fffaf7;
-  --foreground: #2c2521;
-  --accent: #c9866b;
-  --accent-foreground: #ffffff;
-  --muted: #f2e9e4;
-  --muted-foreground: #7a6f68;
-  --border: #e8ddd6;
+  --background: #FAF7FD;
+  --foreground: #2B2542;
+  --foreground-muted: #5F5878;
+  --foreground-subtle: #766F91;
+  --border: #ECE7F5;
+  --accent: #6A4DD4;
+  --accent-dark: #5237B5;
+  --accent-soft: #EFEAFD;
+  --accent-foreground: #FFFFFF;
+  --danger: #D0405A;
+
+  /* Aliases used by the auth/onboarding pages for a subtle hover surface. */
+  --muted: var(--border);
+  --muted-foreground: var(--foreground-muted);
+
+  /* Metric colors: accent / soft, one pair per tracked metric. */
+  --water: #3B8FEA;
+  --water-soft: #E6F1FE;
+  --steps: #2FB37F;
+  --steps-soft: #E2F6EE;
+  --sleep: #7A62E0;
+  --sleep-soft: #ECE8FC;
+  --calories: #EE8A3C;
+  --calories-soft: #FDEEDD;
+  --routine: #E5609A;
+  --routine-soft: #FCE8F1;
+  --workout: #EF5F55;
+  --workout-soft: #FDE8E6;
+  --weight: #A657C9;
+  --weight-soft: #F4E7FA;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+  --color-border: var(--border);
   --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-soft: var(--accent-soft);
   --color-accent-foreground: var(--accent-foreground);
+  --color-danger: var(--danger);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-water: var(--water);
+  --color-water-soft: var(--water-soft);
+  --color-steps: var(--steps);
+  --color-steps-soft: var(--steps-soft);
+  --color-sleep: var(--sleep);
+  --color-sleep-soft: var(--sleep-soft);
+  --color-calories: var(--calories);
+  --color-calories-soft: var(--calories-soft);
+  --color-routine: var(--routine);
+  --color-routine-soft: var(--routine-soft);
+  --color-workout: var(--workout);
+  --color-workout-soft: var(--workout-soft);
+  --color-weight: var(--weight);
+  --color-weight-soft: var(--weight-soft);
+
+  --font-serif: var(--font-instrument-serif);
+  --font-sans: var(--font-manrope);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
 }

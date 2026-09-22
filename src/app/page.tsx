@@ -55,12 +55,20 @@ export default async function Home() {
             <div className="mt-6 space-y-3 text-left">
               <TrackerTiles data={today} />
               <FastingTimer active={activeFast} />
-              <Link
-                href="/food"
-                className="btn-soft flex min-h-[44px] w-full items-center justify-center px-5 text-sm"
-              >
-                Log food &amp; browse recipes
-              </Link>
+              <div className="flex gap-2">
+                <Link
+                  href="/food"
+                  className="btn-soft flex min-h-[44px] flex-1 items-center justify-center px-5 text-sm"
+                >
+                  Log food &amp; browse recipes
+                </Link>
+                <Link
+                  href="/progress"
+                  className="btn-soft flex min-h-[44px] flex-1 items-center justify-center px-5 text-sm"
+                >
+                  Progress &amp; BMI
+                </Link>
+              </div>
             </div>
           </section>
         )}

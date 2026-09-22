@@ -31,6 +31,7 @@ export default async function Home() {
   const displayName = profile?.full_name || user.email;
   const interestKeys: string[] = profile?.interests ?? [];
   const hasHealthFood = interestKeys.includes("health_food");
+  const hasNumerology = interestKeys.includes("numerology_daily");
   const otherSelected = INTERESTS.filter((i) => i.key !== "health_food" && interestKeys.includes(i.key));
 
   const today = hasHealthFood ? await getTodayData(user.id, profile?.timezone ?? "Asia/Kolkata") : null;
@@ -76,12 +77,9 @@ export default async function Home() {
         <div className="space-y-3">
           {otherSelected.map((interest) => {
             const vars = interestThemeVars(interest.theme);
-            return (
-              <div
-                key={interest.key}
-                className="card overflow-hidden"
-                style={{ background: `linear-gradient(160deg, ${vars.soft} 0%, rgba(255,255,255,0) 60%)` }}
-              >
+            const isBuilt = interest.key === "numerology_daily";
+            const content = (
+              <>
                 <div className="flex items-start gap-3">
                   <InterestIcon theme={interest.theme} icon={interest.icon} />
                   <div>
@@ -93,15 +91,27 @@ export default async function Home() {
                   className="mt-3 inline-block rounded-full px-3 py-1 text-xs font-semibold"
                   style={{ background: vars.soft, color: vars.color }}
                 >
-                  Coming soon
+                  {isBuilt ? "Open" : "Coming soon"}
                 </p>
+              </>
+            );
+            const className = "card block overflow-hidden";
+            const style = { background: `linear-gradient(160deg, ${vars.soft} 0%, rgba(255,255,255,0) 60%)` };
+
+            return isBuilt ? (
+              <Link key={interest.key} href="/numerology" className={className} style={style}>
+                {content}
+              </Link>
+            ) : (
+              <div key={interest.key} className={className} style={style}>
+                {content}
               </div>
             );
           })}
         </div>
       </div>
 
-      <TabBar hasHealthFood={hasHealthFood} />
+      <TabBar hasHealthFood={hasHealthFood} hasNumerology={hasNumerology} />
     </div>
   );
 }

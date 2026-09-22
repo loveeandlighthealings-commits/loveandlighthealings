@@ -13,7 +13,9 @@ export default async function MorePage() {
   if (!user) return null;
 
   const { data: profile } = await supabase.from("profiles").select("interests").eq("user_id", user.id).single();
-  const hasHealthFood = (profile?.interests ?? []).includes("health_food");
+  const interestKeys: string[] = profile?.interests ?? [];
+  const hasHealthFood = interestKeys.includes("health_food");
+  const hasNumerology = interestKeys.includes("numerology_daily");
 
   const rows: { href: string; label: string; description: string }[] = [
     { href: "/onboarding", label: "Edit what you see", description: "Choose your dashboard sections" },
@@ -47,7 +49,7 @@ export default async function MorePage() {
         </form>
       </div>
 
-      <TabBar hasHealthFood={hasHealthFood} />
+      <TabBar hasHealthFood={hasHealthFood} hasNumerology={hasNumerology} />
     </div>
   );
 }

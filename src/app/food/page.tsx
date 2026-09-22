@@ -16,10 +16,11 @@ export default async function FoodPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("timezone, diet, cal_goal")
+    .select("timezone, diet, cal_goal, interests")
     .eq("user_id", user.id)
     .single();
 
+  const hasNumerology = (profile?.interests ?? []).includes("numerology_daily");
   const day = todayInTimezone(profile?.timezone ?? "Asia/Kolkata");
   const log = await getFoodLog(user.id, day);
   const kcalLeft = log.calGoal != null ? log.calGoal - log.totalKcal : null;
@@ -163,7 +164,7 @@ export default async function FoodPage() {
         })}
       </div>
 
-      <TabBar hasHealthFood />
+      <TabBar hasHealthFood hasNumerology={hasNumerology} />
     </div>
   );
 }

@@ -1,5 +1,10 @@
 import { saveReflection, setMood } from "@/app/mood-actions";
-import { MOOD_OPTIONS, feelGoodMessageForDay, reflectionQuestionForDay } from "@/lib/reflection-content";
+import {
+  CRISIS_RESOURCE_NOTE,
+  MOOD_OPTIONS,
+  feelGoodMessageForDay,
+  reflectionQuestionForDay,
+} from "@/lib/reflection-content";
 import { HeartIcon } from "./icons";
 import { SectionIcon } from "./page-icon";
 
@@ -49,6 +54,12 @@ export function MoodCheckIn({ day, rating, note }: { day: string; rating: number
           key={feelGoodMessageForDay(day)}
         >
           <p className="text-sm leading-snug text-foreground">{feelGoodMessageForDay(day)}</p>
+        </div>
+      )}
+
+      {rating === 1 && (
+        <div className="mt-3 rounded-2xl border border-border bg-white/70 p-3.5">
+          <p className="text-xs leading-snug text-foreground-muted">{CRISIS_RESOURCE_NOTE}</p>
         </div>
       )}
 

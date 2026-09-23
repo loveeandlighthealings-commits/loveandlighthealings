@@ -83,3 +83,14 @@ export function feelGoodMessageForDay(day: string): string {
   for (const char of day) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
   return FEEL_GOOD_MESSAGES[hash % FEEL_GOOD_MESSAGES.length];
 }
+
+/**
+ * Shown alongside the feel-good message only for the lowest mood option
+ * ("Low"), never for a merely "Meh" day -- a quiet, non-alarming pointer
+ * to real support, not a diagnosis or a substitute for it. Until the app
+ * has its own counsellors on board, this points people to an existing,
+ * free, 24/7 national helpline (plus a general fallback for anyone
+ * outside India).
+ */
+export const CRISIS_RESOURCE_NOTE =
+  "If today feels like more than a rough day, please don't carry it alone. In India, KIRAN (the government's free, 24/7 mental health helpline) is reachable at 1800-599-0019. Outside India, please reach out to a local crisis line, a doctor, or someone you trust.";

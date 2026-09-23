@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { SparkleIcon } from "@/app/_components/icons";
+import { GoogleIcon, SparkleIcon } from "@/app/_components/icons";
+import { loginWithGoogle } from "@/app/oauth-actions";
 import { signup } from "./actions";
 
 export default async function SignupPage({
@@ -27,6 +28,22 @@ export default async function SignupPage({
             {error}
           </p>
         )}
+
+        <form action={loginWithGoogle}>
+          <button
+            type="submit"
+            className="flex min-h-[48px] w-full items-center justify-center gap-2.5 rounded-full border border-border bg-white px-5 text-[14.5px] font-semibold text-foreground active:scale-[0.98]"
+          >
+            <GoogleIcon />
+            Continue with Google
+          </button>
+        </form>
+
+        <div className="flex items-center gap-3 text-xs font-semibold text-foreground-subtle">
+          <span className="h-px flex-1 bg-border" />
+          or
+          <span className="h-px flex-1 bg-border" />
+        </div>
 
         <form action={signup} className="space-y-4">
           <div>

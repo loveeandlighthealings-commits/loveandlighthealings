@@ -59,7 +59,7 @@ export default async function FoodPage() {
 
           {pct != null ? (
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-calories-soft">
-              <div className="h-full rounded-full bg-calories" style={{ width: `${pct}%` }} />
+              <div className="progress-fill h-full rounded-full bg-calories" style={{ width: `${pct}%` }} />
             </div>
           ) : (
             <p className="mt-2 text-xs text-foreground-subtle">

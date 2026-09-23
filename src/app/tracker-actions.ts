@@ -38,6 +38,7 @@ export async function setWater(formData: FormData) {
     .from("daily_logs")
     .upsert({ user_id: user.id, day, water_ml: parsed.data.waterMl }, { onConflict: "user_id,day" });
   revalidatePath("/");
+  revalidatePath("/progress");
 }
 
 const waterDeltaSchema = z.object({ delta: z.coerce.number().int().min(-5000).max(5000) });
@@ -59,6 +60,7 @@ export async function addWater(formData: FormData) {
     .from("daily_logs")
     .upsert({ user_id: user.id, day, water_ml: next }, { onConflict: "user_id,day" });
   revalidatePath("/");
+  revalidatePath("/progress");
 }
 
 const stepsSchema = z.object({ steps: z.coerce.number().int().min(0).max(200000) });

@@ -3,9 +3,13 @@ import { getCurrentProfile, getCurrentUser } from "@/lib/current-user";
 import { INTERESTS } from "@/lib/interests";
 import { getActiveFast } from "@/lib/fasting-data";
 import { getTodayData } from "@/lib/today";
+import { getMoodCheckin } from "@/lib/mood-data";
+import { hourInTimezone, todayInTimezone } from "@/lib/date";
+import { greetingForHour } from "@/lib/reflection-content";
 import { FastingTimer } from "./_components/fasting-timer";
 import { HeroOrb } from "./_components/hero-orb";
 import { InterestIcon, interestThemeVars } from "./_components/interest-visuals";
+import { MoodCheckIn } from "./_components/mood-checkin";
 import { TabBar } from "./_components/tab-bar";
 import { TrackerTiles } from "./_components/tracker-tiles";
 
@@ -26,22 +30,28 @@ export default async function Home() {
 
   const profile = await getCurrentProfile();
   const displayName = profile?.full_name || user.email;
+  const timezone = profile?.timezone ?? "Asia/Kolkata";
   const interestKeys: string[] = profile?.interests ?? [];
   const hasHealthFood = interestKeys.includes("health_food");
   const hasNumerology = interestKeys.includes("numerology_daily");
   const otherSelected = INTERESTS.filter((i) => i.key !== "health_food" && interestKeys.includes(i.key));
 
-  const today = hasHealthFood ? await getTodayData(user.id, profile?.timezone ?? "Asia/Kolkata") : null;
+  const today = hasHealthFood ? await getTodayData(user.id, timezone) : null;
   const activeFast = hasHealthFood ? await getActiveFast(user.id) : null;
+  const day = todayInTimezone(timezone);
+  const mood = await getMoodCheckin(user.id, day);
+  const greeting = greetingForHour(hourInTimezone(timezone));
 
   return (
     <div className="flex flex-1 flex-col items-center px-4 py-10 pb-32">
       <div className="w-full max-w-lg space-y-6">
         <div className="flex items-end justify-between px-1.5 pb-2 pt-3">
           <h1 className="font-serif text-[32px] leading-none tracking-tight text-foreground">
-            Welcome, {displayName}
+            {greeting}, {displayName}
           </h1>
         </div>
+
+        <MoodCheckIn day={day} rating={mood.rating} note={mood.note} />
 
         {today && (
           <section className="text-center">

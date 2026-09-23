@@ -15,7 +15,10 @@ import {
   updateGoals,
   useCalorieSuggestion,
 } from "@/app/progress-actions";
-import { FlameIcon, PulseIcon, ScaleIcon, SlidersIcon, TargetIcon } from "@/app/_components/icons";
+import { addWater, setWater } from "@/app/tracker-actions";
+import { DropIcon, FlameIcon, MinusIcon, PulseIcon, ScaleIcon, SlidersIcon, TargetIcon } from "@/app/_components/icons";
+import { AutoSubmitField } from "@/app/_components/auto-submit-field";
+import { ProgressBar } from "@/app/_components/progress-bar";
 import { SectionIcon } from "@/app/_components/page-icon";
 import { TabBar } from "@/app/_components/tab-bar";
 
@@ -33,7 +36,7 @@ export default async function ProgressPage({
   if (!user) return null;
 
   const data = await getProgressData(user.id);
-  const { profile, weights, currentWeight } = data;
+  const { profile, weights, currentWeight, waterToday } = data;
 
   const cachedProfile = await getCurrentProfile();
   const hasNumerology = (cachedProfile?.interests ?? []).includes("numerology_daily");
@@ -44,6 +47,7 @@ export default async function ProgressPage({
         <h1 className="text-center font-serif text-[32px] leading-none tracking-tight text-foreground">Progress</h1>
 
         <GoalCard startKg={profile.startKg} targetKg={profile.targetKg} currentWeight={currentWeight} />
+        <WaterCard waterMl={waterToday} goalMl={profile.waterGoalMl} />
         <NumbersCard profile={profile} />
         <CalorieHelperCard profile={profile} currentWeight={currentWeight} />
         <BmiCard
@@ -105,7 +109,7 @@ function GoalCard({
           </div>
         </div>
         <div className="mt-3 h-2 overflow-hidden rounded-full bg-weight-soft">
-          <div className="h-full rounded-full bg-weight" style={{ width: `${pct}%` }} />
+          <div className="progress-fill h-full rounded-full bg-weight" style={{ width: `${pct}%` }} />
         </div>
         <p className="mt-2 text-xs text-foreground-subtle">{pct}% of the way from your starting weight.</p>
       </>
@@ -119,6 +123,55 @@ function GoalCard({
         <h3 className="font-serif text-2xl leading-tight text-foreground">How close am I?</h3>
       </div>
       {body}
+    </section>
+  );
+}
+
+const quickAddButton =
+  "min-h-[38px] rounded-full bg-white px-3.5 text-sm font-bold text-foreground shadow-[0_6px_12px_-8px_rgba(60,40,120,0.4)] active:scale-95";
+
+function WaterCard({ waterMl, goalMl }: { waterMl: number; goalMl: number }) {
+  return (
+    <section className="card">
+      <div className="mb-3 flex items-center gap-3">
+        <SectionIcon icon={DropIcon} color="var(--color-water)" />
+        <h3 className="font-serif text-2xl leading-tight text-foreground">Water today</h3>
+      </div>
+      <form action={setWater} className="flex items-end justify-between gap-3">
+        <div className="flex-1">
+          <AutoSubmitField
+            type="number"
+            inputMode="numeric"
+            min={0}
+            step={50}
+            name="waterMl"
+            defaultValue={waterMl || ""}
+            placeholder="0"
+            aria-label="Water in ml"
+            className="w-full min-w-0 border-0 border-b-2 border-transparent bg-transparent p-0 font-serif text-[46px] leading-none tracking-tight text-foreground placeholder:text-foreground-subtle focus:outline-none"
+          />
+          <small className="mt-0.5 block text-xs font-semibold text-foreground-muted">
+            ml{goalMl ? ` of ${goalMl.toLocaleString("en-IN")}` : ""}
+          </small>
+        </div>
+      </form>
+      {goalMl > 0 && <ProgressBar pct={waterMl / goalMl} color="water" />}
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        <form action={addWater}>
+          <input type="hidden" name="delta" value={250} />
+          <button type="submit" className={quickAddButton}>+250</button>
+        </form>
+        <form action={addWater}>
+          <input type="hidden" name="delta" value={500} />
+          <button type="submit" className={quickAddButton}>+500</button>
+        </form>
+        <form action={addWater}>
+          <input type="hidden" name="delta" value={-250} />
+          <button type="submit" aria-label="Undo 250 ml" className={quickAddButton}>
+            <MinusIcon />
+          </button>
+        </form>
+      </div>
     </section>
   );
 }

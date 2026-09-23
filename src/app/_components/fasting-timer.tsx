@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fastingProgress, formatDuration } from "@/lib/fasting";
-import { endFast, startFast } from "@/app/fasting-actions";
+import { endFast, resetFast, startFast } from "@/app/fasting-actions";
 import { MoonIcon } from "./icons";
 import { ProgressBar } from "./progress-bar";
 
@@ -79,12 +79,22 @@ function FastingActive({ active, now }: { active: ActiveFast; now: Date }) {
         </small>
       </div>
       <ProgressBar pct={progress.pct} color="fasting" />
-      <div className="mt-1.5">
+      <div className="mt-1.5 flex flex-wrap gap-1.5">
         <form action={endFast}>
           <input type="hidden" name="id" value={active.id} />
           <input type="hidden" name="broken" value={progress.isComplete ? "false" : "true"} />
           <button type="submit" className={quickAddButton}>
             {progress.isComplete ? "End fast" : "Break fast early"}
+          </button>
+        </form>
+        <form action={resetFast}>
+          <input type="hidden" name="id" value={active.id} />
+          <button
+            type="submit"
+            aria-label="Reset timer and start over"
+            className="min-h-[38px] rounded-full border border-white/70 bg-transparent px-3.5 text-sm font-bold text-foreground-muted active:scale-95"
+          >
+            Reset
           </button>
         </form>
       </div>

@@ -17,6 +17,19 @@ export function weekdayIndex(dateKey: string): number {
   return (jsDay + 6) % 7;
 }
 
+/** The current hour (0-23) in the given IANA timezone, for time-of-day greetings. */
+export function hourInTimezone(timezone: string): number {
+  return Number(new Intl.DateTimeFormat("en-US", { timeZone: timezone, hour: "numeric", hour12: false }).format(new Date()));
+}
+
+/** 1-366, for rotating content by day (e.g. a different reflection question each day). */
+export function dayOfYear(dateKey: string): number {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const start = Date.UTC(year, 0, 1);
+  const current = Date.UTC(year, month - 1, day);
+  return Math.floor((current - start) / 86_400_000) + 1;
+}
+
 const MONTHS_SHORT = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];

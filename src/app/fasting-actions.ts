@@ -44,3 +44,24 @@ export async function endFast(formData: FormData) {
     .eq("user_id", user.id);
   revalidatePath("/");
 }
+
+const resetSchema = z.object({ id: z.string().uuid() });
+
+/**
+ * Resets the timer back to zero: removes the current fast entirely
+ * (rather than ending it) so a mistaken start time or preset doesn't
+ * linger in the person's history, then they can start fresh.
+ */
+export async function resetFast(formData: FormData) {
+  const parsed = resetSchema.safeParse({ id: formData.get("id") });
+  if (!parsed.success) return;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase.from("fasting_sessions").delete().eq("id", parsed.data.id).eq("user_id", user.id);
+  revalidatePath("/");
+}

@@ -185,6 +185,14 @@ export function PaletteIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function HeartIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <Icon {...props}>
+      <path d="M12 20.5S3.5 15.4 3.5 9.4A4.4 4.4 0 0 1 12 7a4.4 4.4 0 0 1 8.5 2.4c0 6-8.5 11.1-8.5 11.1z" />
+    </Icon>
+  );
+}
+
 export function TargetIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <Icon {...props}>

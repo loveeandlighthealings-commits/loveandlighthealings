@@ -276,3 +276,49 @@ body::after {
     animation: breathe 7s ease-in-out infinite;
   }
 }
+
+/*
+ * A gentle entrance for every card/tile across the app, plus tactile
+ * feedback on buttons and smooth progress-bar fills -- applied globally
+ * via the shared .card/.tile classes and element selectors rather than
+ * per page, so it reaches every screen at once.
+ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.16); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card,
+  .tile {
+    animation: fadeInUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-in {
+    animation: fadeInUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+button,
+.btn-primary,
+.btn-soft,
+.btn-ghost {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+/* A little bounce on the mood/emoji buttons and anything else asking for it. */
+@media (prefers-reduced-motion: no-preference) {
+  button[aria-pressed="true"] {
+    animation: pop 0.35s ease;
+  }
+}
+
+.progress-fill {
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/current-user";
+import { todayInTimezone } from "@/lib/date";
 import type { ActivityLevel, BmiScale, Sex } from "@/lib/formulas";
 
 export interface ProgressProfile {
@@ -25,6 +26,7 @@ export interface ProgressData {
   profile: ProgressProfile;
   weights: WeightEntry[];
   currentWeight: number | null;
+  waterToday: number;
 }
 
 /** Profile goals/settings plus the full weight history, for the Progress screen. */
@@ -37,6 +39,14 @@ export async function getProgressData(userId: string): Promise<ProgressData> {
     supabase.from("weights").select("day, kg").eq("user_id", userId).order("day", { ascending: true }),
   ]);
   const weights: WeightEntry[] = weightsRes.data ?? [];
+
+  const day = todayInTimezone(p?.timezone ?? "Asia/Kolkata");
+  const { data: log } = await supabase
+    .from("daily_logs")
+    .select("water_ml")
+    .eq("user_id", userId)
+    .eq("day", day)
+    .maybeSingle();
 
   return {
     profile: {
@@ -54,5 +64,6 @@ export async function getProgressData(userId: string): Promise<ProgressData> {
     },
     weights,
     currentWeight: weights.length ? weights[weights.length - 1].kg : null,
+    waterToday: log?.water_ml ?? 0,
   };
 }
